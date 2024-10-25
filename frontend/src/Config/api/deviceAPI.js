@@ -28,6 +28,12 @@ export const addORdeleteFriend = async (formData) => {
     return data
 }
 
+//Chat
+export const chatRoom = async (idTeacher, idFriend) => {
+    const {data} = await $authHost.get(`api/chat/${(idTeacher)}/${(idFriend)}`)
+    return data
+}
+
 
 // Tool
 export const getTools = async () => {

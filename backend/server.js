@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const routes = require('./Routes/router');
 const sequelize = require('./bd');
 const path = require('path');
+const http = require('http'); // Добавляем HTTP-сервер
+const { Server } = require('socket.io'); // Добавляем Socket.IO
 
 const app = express();
 const PORT = 8081;
@@ -39,6 +41,25 @@ app.post('/api/logout', (req, res) => {
   return res.json({ success: true });
 });
 
+// Создаем HTTP-сервер и добавляем Socket.IO
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: 'http://localhost:5173' } });
+
+// Подключаем Socket.IO
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
+
+  socket.on('sendMessage', (message) => {
+    // Обработка отправки сообщения
+    console.log('Message received:', message);
+    io.emit('receiveMessage', message); // Отправляем сообщение всем клиентам
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
 (async () => {
   try {
     await sequelize.authenticate();
@@ -48,6 +69,7 @@ app.post('/api/logout', (req, res) => {
   }
 })();
 
-app.listen(PORT, () => {
+// Запускаем HTTP-сервер вместо app.listen
+server.listen(PORT, () => {
   console.log(`Servidor está rodando na porta ${PORT}`);
 });

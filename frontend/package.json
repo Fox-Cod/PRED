@@ -47,6 +47,7 @@
     "react-toastify": "^10.0.6",
     "react-transition-group": "^4.4.5",
     "simplebar": "^6.2.7",
+    "socket.io-client": "^4.8.1",
     "tailwind-config": "^0.1.2",
     "tailwind-merge": "^2.5.2",
     "tiny-slider": "^2.9.4",

@@ -45,7 +45,6 @@ async function getSubjectsEducationsAndYears(req, res) {
     }
 }
 
-// Универсальная функция удаления
 async function deleteEntity(req, res) {
     try {
         const { entityType, entityId } = req.body;

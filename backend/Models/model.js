@@ -115,12 +115,28 @@ const Friends = sequelize.define('Friends', {
   idFriend: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' } },
 }, { tableName: 'friends', timestamps: false });
 
+const Messages = sequelize.define('Messages', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  senderId: { type: DataTypes.INTEGER,references: { model: Users, key: 'idTeacher' } },
+  receiverId: { type: DataTypes.INTEGER,references: { model: Users, key: 'idTeacher' } },
+  message: { type: DataTypes.TEXT, allowNull: false }, 
+  timeStamp: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+}, { tableName: 'messages', timestamps: false });
+
+
+
 // Определение ассоциаций (Связей)
 Users.hasMany(User_Groups, { foreignKey: 'idTeacher', as: 'user_groups' });
 Users.hasMany(User_Schools, { foreignKey: 'idTeacher', as: 'user_schools' });
 
 Users.hasMany(Friends, { foreignKey: 'idTeacher', sourceKey: 'idTeacher', as: 'friends' });
-Users.hasMany(Friends, { foreignKey: 'idFriend', sourceKey: 'idTeacher', as: 'friendOf' }); // Вторая сторона ассоциации
+Users.hasMany(Friends, { foreignKey: 'idFriend', sourceKey: 'idTeacher', as: 'friendOf' });
+
+Users.hasMany(Messages, { foreignKey: 'receiverId', sourceKey: 'idTeacher', as: 'receivedMessages' });
+Users.hasMany(Messages, { foreignKey: 'senderId', sourceKey: 'idTeacher', as: 'sentMessages' });
+
+Messages.belongsTo(Users, { foreignKey: 'senderId', as: 'sender' });
+Messages.belongsTo(Users, { foreignKey: 'receiverId', as: 'receiver' });
 
 Friends.belongsTo(Users, { foreignKey: 'idTeacher', as: 'user' });
 Friends.belongsTo(Users, { foreignKey: 'idFriend', as: 'friend' });
@@ -174,6 +190,7 @@ module.exports = {
   Schools,
   Users,
   Tools,
+  Messages,
   Activities,
   Activity_Files,
   Activity_Subjects,

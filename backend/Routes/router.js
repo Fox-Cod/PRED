@@ -37,6 +37,7 @@ const userController = require('../Controllers/UserController');
 const activityController = require('../Controllers/ActivityController');
 const toolController = require('../Controllers/ToolController');
 const otherController = require('../Controllers/OtherController');
+const chatController = require('../Controllers/ChatController');
 
 const { authenticateToken } = require('../middleware/authMiddleware');
 
@@ -54,7 +55,9 @@ router.get('/user/profile-view/:idTeacher', userController.getProfileUserToView)
 
 router.post('/user/add-or-delete-friend', userController.addORdeleteFriend);
 
-
+//Chat
+router.post('/chat/send', authenticateToken, chatController.sendMessage);
+router.get('/chat/:userId/:friendId', authenticateToken, chatController.getMessages);
 
 // Активности
 router.post('/add-activity', upload.array('files'), authenticateToken, activityController.postActivity);

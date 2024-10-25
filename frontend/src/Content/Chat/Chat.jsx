@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../../Config/contexts/context";
 import { API_URL } from "../../Config/api";
+import { ChatRoom } from "../../Components/Other/Other";
 
 export default function Chat() {
     const { user } = useContext(Context)
@@ -58,11 +59,11 @@ export default function Chat() {
                                                 <div key={index} className="scrollbar-hidden overflow-x-auto">
                                                     <div className="mt-5 flex">
                                                         <Link to={`/user-profile-view/${item?.friend?.idTeacher}`} className="mr-4 w-10 cursor-pointer">
-                                                            <div className="image-fit h-10 w-10 flex-none rounded-full">
+                                                            <div className="image-fit zoom-in h-10 w-10 flex-none rounded-full">
                                                                 {item?.friend?.photo ? (<img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-8 w-8 object-cover rounded-full" />) : (<div className="rounded-full-black"> {item?.friend?.name?.slice(0, 1).toUpperCase()}</div>)}
                                                                 <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-success dark:border-darkmode-600"></div>
                                                             </div>
-                                                            <div className="mt-2 truncate text-center text-xs text-slate-500">
+                                                            <div className="mt-2 pb-5 truncate text-center text-xs text-slate-500">
                                                                 {item?.friend?.name}
                                                             </div>
                                                         </Link>
@@ -145,91 +146,7 @@ export default function Chat() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="scrollbar-hidden flex-1 overflow-y-scroll px-5 pt-5">
-                                    <div className="float-left mb-4 flex max-w-[90%] items-end sm:max-w-[49%]">
-                                        <div className="image-fit relative mr-5 hidden h-10 w-10 flex-none sm:block">
-                                            {/* <img
-                                                className="rounded-full"
-                                                src="dist/images/fakers/profile-6.jpg"
-                                                alt="#"
-                                            /> */}
-                                        </div>
-                                        <div className="rounded-r-md rounded-t-md bg-slate-100 px-4 py-3 text-slate-500 dark:bg-darkmode-400">
-                                            ._message
-                                            <div className="mt-1 text-xs text-slate-500">._time</div>
-                                        </div>
-                                        <div className="dropdown relative my-auto ml-3 hidden sm:block">
-                                            <a className="cursor-pointer h-4 w-4 text-slate-500">
-                                                <i className="stroke-1.5 h-4 w-4"/>
-                                            </a>
-                                            <div className="dropdown-menu absolute z-[9999] hidden">
-                                                <div className="dropdown-content rounded-md border-transparent bg-white p-2 shadow-[0px_3px_10px_#00000017] dark:border-transparent dark:bg-darkmode-600 w-40">
-                                                    <a className="cursor-pointer flex items-center p-2 transition duration-300 ease-in-out rounded-md hover:bg-slate-200/60 dark:bg-darkmode-600 dark:hover:bg-darkmode-400 dropdown-item">
-                                                        <i className="stroke-1.5 mr-2 h-4 w-4" />
-                                                        Responder
-                                                    </a>
-                                                    <a className="cursor-pointer flex items-center p-2 transition duration-300 ease-in-out rounded-md hover:bg-slate-200/60 dark:bg-darkmode-600 dark:hover:bg-darkmode-400 dropdown-item">
-                                                        <i className="stroke-1.5 mr-2 h-4 w-4"/>
-                                                        Eliminar
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="clear-both" />
-                                    <div className="float-right mb-4 flex max-w-[90%] items-end sm:max-w-[49%]">
-                                        <div className="dropdown relative my-auto mr-3 hidden sm:block">
-                                            <a className="cursor-pointer h-4 w-4 text-slate-500">
-                                                <i className="stroke-1.5 h-4 w-4"/>
-                                            </a>
-                                            <div className="dropdown-menu absolute z-[9999] hidden">
-                                                <div className="dropdown-content rounded-md border-transparent bg-white p-2 shadow-[0px_3px_10px_#00000017] dark:border-transparent dark:bg-darkmode-600 w-40">
-                                                    <a className="cursor-pointer flex items-center p-2 transition duration-300 ease-in-out rounded-md hover:bg-slate-200/60 dark:bg-darkmode-600 dark:hover:bg-darkmode-400 dropdown-item">
-                                                        <i className="stroke-1.5 mr-2 h-4 w-4"/>
-                                                        Responder
-                                                    </a>
-                                                    <a className="cursor-pointer flex items-center p-2 transition duration-300 ease-in-out rounded-md hover:bg-slate-200/60 dark:bg-darkmode-600 dark:hover:bg-darkmode-400 dropdown-item">
-                                                        <i className="stroke-1.5 mr-2 h-4 w-4" />
-                                                        Eliminar
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="rounded-l-md rounded-t-md bg-primary px-4 py-3 text-white">
-                                            _.message
-                                            <div className="mt-1 text-xs text-white text-opacity-80">
-                                                _.time
-                                            </div>
-                                        </div>
-                                        <div className="image-fit relative ml-5 hidden h-10 w-10 flex-none sm:block">
-                                            {/* <img
-                                                className="rounded-full"
-                                                src="dist/images/fakers/profile-3.jpg"
-                                                alt="#"
-                                            /> */}
-                                        </div>
-                                    </div>
-                                    <div className="clear-both" />
-                                </div>
-
-                                <div className="flex items-center border-t border-slate-200/60 pb-10 pt-4 dark:border-darkmode-400 sm:py-4">
-                                    <textarea
-                                        rows={1}
-                                        placeholder="Escreva a sua mensagem..."
-                                        className="border-t border-slate-200/60 disabled:bg-slate-100 disabled:cursor-not-allowed dark:disabled:bg-darkmode-800/50 dark:disabled:border-transparent [&[readonly]]:bg-slate-100 [&[readonly]]:cursor-not-allowed [&[readonly]]:dark:bg-darkmode-800/50 [&[readonly]]:dark:border-transparent transition duration-200 ease-in-out w-full text-sm rounded-md placeholder:text-slate-400/90 focus:ring-primary focus:ring-opacity-20 focus:border-opacity-40 dark:border-transparent dark:focus:ring-slate-700 dark:focus:ring-opacity-50 dark:placeholder:text-slate-500/80 group-[.form-inline]:flex-1 group-[.input-group]:rounded-none group-[.input-group]:[&:not(:first-child)]:border-l-transparent group-[.input-group]:first:rounded-l group-[.input-group]:last:rounded-r group-[.input-group]:z-10 h-[46px] resize-none border-transparent px-5 py-3 shadow-none focus:border-transparent focus:ring-0 dark:bg-darkmode-600"
-                                    />
-
-                                    <div class="relative mr-3 h-4 w-4 text-slate-500 sm:mr-5 sm:h-5 sm:w-5">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-paperclip"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" /></svg>
-                                        <input data-tw-merge="" type="file" class="disabled:bg-slate-100 disabled:cursor-not-allowed dark:disabled:bg-darkmode-800/50 dark:disabled:border-transparent [&[readonly]]:bg-slate-100 [&[readonly]]:cursor-not-allowed [&[readonly]]:dark:bg-darkmode-800/50 [&[readonly]]:dark:border-transparent transition duration-200 ease-in-out w-full text-sm border-slate-200 shadow-sm rounded-md placeholder:text-slate-400/90 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary focus:border-opacity-40 dark:bg-darkmode-800 dark:border-transparent dark:focus:ring-slate-700 dark:focus:ring-opacity-50 dark:placeholder:text-slate-500/80 group-[.form-inline]:flex-1 group-[.input-group]:rounded-none group-[.input-group]:[&:not(:first-child)]:border-l-transparent group-[.input-group]:first:rounded-l group-[.input-group]:last:rounded-r group-[.input-group]:z-10 absolute left-0 top-0 h-full opacity-0" />
-                                    </div>
-
-                                    <a class="mr-5 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary text-white sm:h-10 sm:w-10" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" /><path d="m21.854 2.147-10.94 10.939" /></svg>
-                                    </a>
-
-                                </div>
-
+                                <ChatRoom userId={user?.profile?.idTeacher} friendId={2} />
                             </div>
                         </div>
                     </div>
