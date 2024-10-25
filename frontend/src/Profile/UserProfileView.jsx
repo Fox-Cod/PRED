@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Context } from "../Config/contexts/context";
 import SortTime from "../Components/Other/Other"
-import { profileView } from "../Config/api/deviceAPI";
+import { profileView, addORdeleteFriend } from "../Config/api/deviceAPI";
 import { API_URL } from "../Config/api";
+import { toast } from "react-toastify";
 
 export default function UserProfileView() {
     const { user } = useContext(Context)
@@ -12,6 +13,28 @@ export default function UserProfileView() {
     const { idTeacher } = useParams();
     const [userData, setUserData] = useState('')
     const [error, setError] = useState('')
+
+    const idTeacherNum = parseInt(idTeacher, 10);
+
+    const [friendData, setFriendData] = useState({
+        idTeacher: user?.profile?.idTeacher,
+        idFriend: idTeacherNum
+    })
+
+    const handleFriendToggle = async () => {
+        try {
+            const response = await addORdeleteFriend(friendData)
+            if (response.success){
+                toast.success(<p className="font-bold">Adicionou-o com sucesso como amigo!</p>)
+                setTimeout(() => { window.location.reload() , 5000})
+            } else {
+                toast.success(<p className="font-bold">Removido com sucesso da sua lista de amigos!</p>)
+                setTimeout(() => { window.location.reload() , 5000})
+            }
+        } catch(err) {
+            console.log(err)
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,7 +52,7 @@ export default function UserProfileView() {
     const groupNames = userData?.profile?.user_groups?.map(group => group?.groups?.nameGroup);
     const schoolNames = userData?.profile?.user_schools?.map(school => school?.schools?.nameSchool);
 
-    const idTeacherNum = parseInt(idTeacher, 10);
+
     const isFriend = user?.profile?.friends?.some(item => item?.idFriend === idTeacherNum);
     return (
         <>
@@ -59,7 +82,7 @@ export default function UserProfileView() {
                             ) : (
                                 <div className="flex border-t border-slate-200/60 p-5 dark:border-darkmode-400">
                                     <div className="flex w-full gap-2">
-                                        <button className="flex-1 transition duration-200 border shadow-sm py-2 flex flex-wrap items-center justify-center px-3 rounded-md font-medium border-primary text-primary [&:hover:not(:disabled)]:bg-primary/10">
+                                        <button onClick={handleFriendToggle} className="flex-1 transition duration-200 border shadow-sm py-2 flex flex-wrap items-center justify-center px-3 rounded-md font-medium border-primary text-primary [&:hover:not(:disabled)]:bg-primary/10">
 
                                             {isFriend ? (
                                                 <div className="flex items-center">

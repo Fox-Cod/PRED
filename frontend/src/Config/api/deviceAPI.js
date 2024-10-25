@@ -23,6 +23,11 @@ export const avatarUpdate = async (avatar) => {
     return data
 }
 
+export const addORdeleteFriend = async (formData) => {
+    const {data} = await $authHost.post(`api/user/add-or-delete-friend`, formData)
+    return data
+}
+
 
 // Tool
 export const getTools = async () => {

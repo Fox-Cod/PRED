@@ -4,20 +4,35 @@ import { Link } from "react-router-dom";
 import { Context } from "../Config/contexts/context";
 import SortTime from "../Components/Other/Other"
 import teamUpImage from '../assets/images/team-up.svg'
+import { activity } from "../Config/api/deviceAPI";
+import { API_URL } from "../Config/api";
 
 export default function UserProfile() {
     const { user } = useContext(Context)
     const [favoritesActivity, setFavoritesActivity] = useState([]);
+    const [activities, setActivities] = useState([]);
 
     useEffect(() => {
         const savedFavorites = Cookies.get('activityFavorites');
         setFavoritesActivity((savedFavorites || "").split(',').map(Number));
     }, []);
 
-    const myFriends = user?.profile?.friends?.map((item) => item?.friend?.name)
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await activity();
+                setActivities(data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchData();
+    }, []);
 
     const groupNames = user?.profile?.user_groups?.map(group => group.groups.nameGroup);
     const schoolNames = user?.profile?.user_schools?.map(school => school.schools.nameSchool);
+
+    console.log(favoritesActivity)
 
     return (
         <>
@@ -32,7 +47,7 @@ export default function UserProfile() {
                             <div className="relative flex items-center p-5">
                                 <div className="image-fit h-12 w-12">
                                     <button className="bg-gray-400/80 text-white h-12 w-12 scale-110 font-bold overflow-hidden rounded-full " >
-                                        {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (<img src={user.profile.avatarUrl} alt="Img" /> ) : ( <div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div> )}
+                                        {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (<img src={user.profile.avatarUrl} alt="Img" />) : (<div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
                                     </button>
                                 </div>
 
@@ -85,47 +100,47 @@ export default function UserProfile() {
                             <div className="intro-y box col-span-12 2xl:col-span-auto overflow-y-auto" style={{ maxHeight: '484.5px' }}>
                                 <div className="flex items-center border-b border-slate-200/60 px-5 p-5 py-3 dark:border-darkmode-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-activity"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></svg>
-                                    <h2 className="mr-auto text-base font-medium ml-2">Sua atividade</h2>
+                                    <h2 className="mr-auto text-base font-medium ml-2">Sua atividade(s)</h2>
                                 </div>
-                                {/* {user.activity.lenght ? ( */}
-                                {user.activity.map((activity) => (
-                                    <div className="tiny-slider py-5" key={activity.idActivity}>
-                                        <div className="px-5">
-                                            <div className="flex items-center">
-                                                <div className="text-lg font-medium"> {activity.title} </div>
-                                                <div className="ml-auto text-xs text-slate-500">
-                                                    <SortTime date={activity.publishDate} />
+                                {user.activity.length ? (
+                                    user.activity.map((activity) => (
+                                        <div className="tiny-slider py-5" key={activity.idActivity}>
+                                            <div className="px-5">
+                                                <div className="flex items-center">
+                                                    <div className="text-lg font-medium"> {activity.title} </div>
+                                                    <div className="ml-auto text-xs text-slate-500">
+                                                        <SortTime date={activity.publishDate} />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="mt-2 text-slate-600 dark:text-slate-500">{activity.description}</div>
-                                            <div className="flex items-center">
-                                                <div className="flex mb-0 item-center">
-                                                    {activity.activity_subjects?.map((subjectItem, subjectIndex) => (
-                                                        <p className="text-xs block font-bold text-success mr-1" key={subjectIndex}>{subjectItem.subjects?.nameSubject}</p>
-                                                    ))}
+                                                <div className="mt-2 text-slate-600 dark:text-slate-500">{activity.description}</div>
+                                                <div className="flex items-center">
+                                                    <div className="flex mb-0 item-center">
+                                                        {activity.activity_subjects?.map((subjectItem, subjectIndex) => (
+                                                            <p className="text-xs block font-bold text-success mr-1" key={subjectIndex}>{subjectItem.subjects?.nameSubject}</p>
+                                                        ))}
 
-                                                    {activity.activity_educations?.map((educationItem, educationIndex) => (
-                                                        <p className="text-xs block font-bold text-warning mr-1" key={educationIndex}>{educationItem.educations?.nameEducation}</p>
-                                                    ))}
+                                                        {activity.activity_educations?.map((educationItem, educationIndex) => (
+                                                            <p className="text-xs block font-bold text-warning mr-1" key={educationIndex}>{educationItem.educations?.nameEducation}</p>
+                                                        ))}
 
-                                                    {activity.activity_years?.map((yearItem, yearIndex) => (
-                                                        <p className="text-xs block font-bold text-primary mr-1" key={yearIndex}>{yearItem.years?.year}</p>
-                                                    ))}
+                                                        {activity.activity_years?.map((yearItem, yearIndex) => (
+                                                            <p className="text-xs block font-bold text-primary mr-1" key={yearIndex}>{yearItem.years?.year}</p>
+                                                        ))}
+                                                    </div>
+                                                    <Link to={`/view-activity/${activity.idActivity}`} className="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed border-secondary text-slate-500 dark:border-darkmode-100/40 dark:text-slate-300 [&:hover:not(:disabled)]:bg-secondary/20 [&:hover:not(:disabled)]:dark:bg-darkmode-100/10 ml-auto">
+                                                        Ver detalhes
+                                                    </Link>
                                                 </div>
-                                                <Link to={`/view-activity/${activity.idActivity}`} className="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed border-secondary text-slate-500 dark:border-darkmode-100/40 dark:text-slate-300 [&:hover:not(:disabled)]:bg-secondary/20 [&:hover:not(:disabled)]:dark:bg-darkmode-100/10 ml-auto">
-                                                    Ver detalhes
-                                                </Link>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
-                                {/* ) : (
+                                    ))
+                                ) : (
                                     <div className="p-9 text-center" >
                                         <p><span className="mr-auto text-base font-medium">Parece que ainda não tem atividades publicadas.</span>
                                             <br />Ficaríamos felizes em ver as suas ideias e projetos!</p>
                                         <br /><Link to='/add-post' className="text-primary font-medium">Adicionar publicação</Link>
                                     </div>
-                                )} */}
+                                )}
                             </div>
 
 
@@ -139,11 +154,11 @@ export default function UserProfile() {
                                     <div className="p-5">
                                         {favoritesActivity.length > 0 ? (
                                             favoritesActivity.map(favId => {
-                                                const activity = user.activity.find((act) => act.idActivity === favId);
+                                                const activity = activities.find((act) => act.idActivity === favId);
 
                                                 return activity ? (
                                                     <div key={favId}>
-                                                        <Link to="/" className="truncate text-base font-medium">
+                                                        <Link to={`/view-activity/${activity.idActivity}`} className="truncate text-base font-medium">
                                                             {activity.title}
                                                         </Link>
                                                         <p className="mt-1 text-slate-400"></p>
@@ -151,7 +166,7 @@ export default function UserProfile() {
                                                     </div>
                                                 ) : (
                                                     <>
-                                                        <div className="text-center" key={favId}>
+                                                        <div className="text-center">
                                                             <p>Ainda não adicionou atividades aos favoritos.</p>
                                                             <span>Para guardar nos favoritos, clique no ícone:</span>
                                                         </div>
@@ -170,18 +185,17 @@ export default function UserProfile() {
                                 </div>
                             </div>
 
-
                             <div className="intro-y col-span-6 box 2xl:col-span-auto max-h-96 overflow-y-auto">
                                 <div className="flex items-center border-b border-slate-200/60 px-5 p-5 py-3 dark:border-darkmode-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
-                                    <h2 className="mr-auto text-base font-medium ml-2">Amigos</h2>
+                                    <h2 className="mr-auto text-base font-medium ml-2">Meu amigo(s)</h2>
                                 </div>
 
                                 {user?.profile?.friends?.map((item, index) => (
                                     <Link to={`/user-profile-view/${item?.friend?.idTeacher}`} key={index} className="cursor-pointer relative flex items-center p-3 hover:bg-slate-200/60" >
                                         <div className="image-fit h-8 w-8">
                                             <button className="bg-gray-400/80 text-white h-8 w-8 scale-110 font-bold overflow-hidden rounded-full " >
-                                                <span className="rounded-full-black">{item?.friend?.name?.slice(0, 1).toUpperCase() || 'F'}</span>
+                                                {item?.friend?.photo ? (<img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-8 w-8 object-cover rounded-full" />) : (<div className="rounded-full-black"> {item?.friend?.name?.slice(0, 1).toUpperCase()}</div>)}
                                             </button>
                                         </div>
                                         <div className="ml-2 overflow-hidden">

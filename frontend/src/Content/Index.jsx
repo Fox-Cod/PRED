@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { HomeNavbar } from "./Home/HomeNavbar";
-import backgroundImage from '../assets/images/fakers/Backgraund-Classroom.jpg'
 import teamUpImage from '../assets/images/team-up.svg'
 import personalDataImage from '../assets/images/personal-data.svg'
 import teamCollaborationImage from '../assets/images/team-collaboration.svg'

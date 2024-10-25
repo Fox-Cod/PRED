@@ -31,7 +31,7 @@ async function getProfileUser(req, res) {
                     include: {
                         model: Users,
                         as: 'friend',
-                        attributes: ['idTeacher', 'name', 'email'] 
+                        attributes: ['idTeacher', 'name', 'email', 'photo'] 
                     }
                 },
                 {
@@ -40,7 +40,7 @@ async function getProfileUser(req, res) {
                     include: {
                         model: Users,
                         as: 'user', 
-                        attributes: ['idTeacher', 'name', 'email']
+                        attributes: ['idTeacher', 'name', 'email', 'photo']
                     }
                 }
             ]
@@ -236,11 +236,11 @@ async function getProfileUserToView(req, res) {
     }
 }
 
-async function addFriend(req, res) {
-    const { idTeacher, idFriend } = req.body; 
+async function addORdeleteFriend(req, res) {
+    const { idTeacher, idFriend } = req.body;
 
     if (!idTeacher || !idFriend) {
-        return res.status(400).json({ message: 'ID пользователя и друга обязательны.' });
+        return res.status(400).json({ message: 'A ID de utilizador e a ID de amigo são obrigatórias.' });
     }
 
     try {
@@ -252,20 +252,22 @@ async function addFriend(req, res) {
         });
 
         if (existingFriendship) {
-            return res.status(409).json({ message: 'Вы уже добавили этого пользователя в друзья.' });
+            await existingFriendship.destroy();
+            return res.status(200).json({ message: 'Amigo removido da lista de amigos.' });
+        } else {
+            const newFriendship = await Friends.create({
+                idTeacher: idTeacher,
+                idFriend: idFriend
+            });
+            return res.status(201).json({ success: true, message: 'Foi adicionado um amigo!', friendship: newFriendship });
         }
 
-        const newFriendship = await Friends.create({
-            idTeacher: idTeacher,
-            idFriend: idFriend
-        });
-
-        return res.status(201).json({ message: 'Друг добавлен!', friendship: newFriendship });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: 'Ошибка на сервере.' });
+        return res.status(500).json({ message: 'Erro no servidor.' });
     }
-};
+}
 
 
-module.exports = { getProfileUser, updateProfileUser, uploadAvatar, getProfileUserToView };
+
+module.exports = { getProfileUser, updateProfileUser, uploadAvatar, getProfileUserToView, addORdeleteFriend };

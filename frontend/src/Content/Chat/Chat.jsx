@@ -1,6 +1,5 @@
 import React from "react";
-import profile from '../../assets/images/fakers/profile-13.jpg'
-import img from '../../assets/images/fakers/preview-1.jpg'
+
 import { Link } from "react-router-dom";
 
 export default function Chat() {

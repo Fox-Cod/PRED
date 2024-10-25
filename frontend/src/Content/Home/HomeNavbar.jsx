@@ -70,7 +70,7 @@ export const HomeNavbar = () => {
                     <div className="space-x-4">
                         <div className="relative" ref={dropdownRef}>
                             <button onClick={toggleDropdown} aria-expanded={isDropdownOpen} className="bg-slate-200 cursor-pointer image-fit zoom-in intro-x block h-8 w-8 scale-110 overflow-hidden rounded-full shadow-lg" >
-                                <span className="rounded-full-black">{user.profile.name.slice(0, 1).toUpperCase()}</span>
+                                {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (<img src={user.profile.avatarUrl} alt="Img" className="h-8 w-8 rouded-full" />) : (<div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
                             </button>
                             <div
                                 className={`absolute right-0 mt-2 w-56 rounded-md border border-gray-100 shadow-lg bg-white p-2 transform transition-all duration-300 ease-in-out 

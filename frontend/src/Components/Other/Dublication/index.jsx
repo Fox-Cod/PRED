@@ -93,7 +93,7 @@ export const ActivityList = () => {
                                 <div className="before:absolute before:ml-5 before:mt-5 before:block before:h-px before:w-20 before:bg-slate-200 before:dark:bg-darkmode-400">
                                     <button className="bg-slate-200 image-fit cursor-pointer zoom-in h-10 w-10 flex-none overflow-hidden rounded-full">
                                         <span className="rounded-full-black" title={activity.users.name}>
-                                            <Link to={activity.users.idTeacher === user.profile.idTeacher ? (`/user-profile`) : (`/user-profile-view/${activity.users.idTeacher}`)}>{activity.users.name.slice(0, 1).toUpperCase()}</Link>
+                                            <Link to={activity.users.idTeacher === user.profile.idTeacher ? (`/user-profile`) : (`/user-profile-view/${activity.users.idTeacher}`)}>{activity?.users?.photo ? (<img src={`${API_URL}/${activity?.users?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />) : (<div className="rounded-full-black"> {activity?.users?.name?.slice(0, 1).toUpperCase()}</div>)}</Link>
                                         </span>
                                     </button>
                                     <div className="items-center mt-1">
@@ -181,13 +181,15 @@ export const ActivityView = ({ activityId }) => {
     const activityEducationsList = activity.activity_educations?.map((item) => (item?.educations?.nameEducation))
     const activityYearsList = activity.activity_years?.map((item) => (item?.years?.year))
 
+    console.log(activity.users)
+
     return (
         <>
             <div className="col-span-12 md:col-span-6 xl:col-span-4">
                 <div className="flex items-center border-b border-slate-200/60 px-5 py-4 dark:border-darkmode-400">
                     <div className="image-fit h-10 w-10 flex-none">
                         <button className="bg-gray-400/80 text-white h-10 w-10 scale-110 font-bold overflow-hidden rounded-full " >
-                            <span className="rounded-full-black">{activity?.users?.name.slice(0, 1).toUpperCase() || 'F'}</span>
+                            {activity?.users?.photo ? (<img src={`${API_URL}/${activity?.users?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />) : (<div className="rounded-full-black"> {activity?.users?.name?.slice(0, 1).toUpperCase()}</div>)}
                         </button>
                     </div>
                     <div className="ml-3 mr-auto truncate">

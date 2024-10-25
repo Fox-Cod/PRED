@@ -52,6 +52,9 @@ router.post('/user/upload-avatar', uploadAvatar.single('avatar'), authenticateTo
 
 router.get('/user/profile-view/:idTeacher', userController.getProfileUserToView);
 
+router.post('/user/add-or-delete-friend', userController.addORdeleteFriend);
+
+
 
 // Активности
 router.post('/add-activity', upload.array('files'), authenticateToken, activityController.postActivity);

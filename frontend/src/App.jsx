@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, lazy } from 'react';
 import { Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
+
 import Navigator from './Components/Navigador';
 import Index from './Content/Index';
 import Updates from './Content/Home/News';
-import Contacts  from './Content/Home/Contacts';
+import Contacts from './Content/Home/Contacts';
 import UserProfile from './Profile/UserProfile';
 import UpdateProfile from './Profile/UpdateProfile';
 import UserProfileView from './Profile/UserProfileView';
@@ -24,29 +25,66 @@ import { healthCheck } from './Config/api/deviceAPI';
 import { ServerError } from './Components/Other/Other';
 import Cookies from 'js-cookie';
 
+const LoadingSpinner = () => {
+  return (
+    <div className="flex items-center justify-center h-screen"> {/* Добавлен контейнер */}
+        <svg className="h-mid w-mid" width="75" viewBox="0 0 135 140" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+          <rect y="10" width="15" height="120" rx="6">
+            <animate values="120;110;100;90;80;70;60;50;40;140;120" attributeName="height" begin="0.5s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+            <animate values="10;15;20;25;30;35;40;45;50;0;10" attributeName="y" begin="0.5s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+          </rect>
+          <rect x="30" y="10" width="15" height="120" rx="6">
+            <animate values="120;110;100;90;80;70;60;50;40;140;120" attributeName="height" begin="0.25s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+            <animate values="10;15;20;25;30;35;40;45;50;0;10" attributeName="y" begin="0.25s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+          </rect>
+          <rect x="60" width="15" height="140" rx="6">
+            <animate values="120;110;100;90;80;70;60;50;40;140;120" attributeName="height" begin="0s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+            <animate values="10;15;20;25;30;35;40;45;50;0;10" attributeName="y" begin="0s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+          </rect>
+          <rect x="90" y="10" width="15" height="120" rx="6">
+            <animate values="120;110;100;90;80;70;60;50;40;140;120" attributeName="height" begin="0.25s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+            <animate values="10;15;20;25;30;35;40;45;50;0;10" attributeName="y" begin="0.25s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+          </rect>
+          <rect x="120" y="10" width="15" height="120" rx="6">
+            <animate values="120;110;100;90;80;70;60;50;40;140;120" attributeName="height" begin="0.5s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+            <animate values="10;15;20;25;30;35;40;45;50;0;10" attributeName="y" begin="0.5s" dur="1s" calcMode="linear" repeatCount="indefinite" />
+          </rect>
+        </svg>
+    </div>
+
+  );
+};
+
 const App = observer(() => {
   const { user } = useContext(Context);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
   const [serverError, setServerError] = useState(false);
-  const [serverErrorMessage, setServerErrorMessage] = useState('')
+  const [serverErrorMessage, setServerErrorMessage] = useState('');
   const [immunityTime, setImmunityTime] = useState(600);
   const isSignInPage = ['/sign-in', '/', '/sign-up', '/password-reset-email', '/reset-password', '/updates', '/contacts'].includes(location.pathname);
 
   useEffect(() => {
-    const checkServerStatus = async () => {
+    const randomDelay = Math.floor(Math.random() * 1500);
+    const loadData = async () => {
       try {
         await healthCheck();
         setServerError(false);
-        setServerErrorMessage('')
+        setServerErrorMessage('');
       } catch (error) {
         console.error("Erro no servidor:", error);
         setServerError(true);
-        setServerErrorMessage(error.message)
+        setServerErrorMessage(error.message);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, randomDelay);
       }
     };
 
-    checkServerStatus();
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -78,6 +116,10 @@ const App = observer(() => {
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <>
       <p className='text-center'>{serverErrorMessage}</p>
@@ -87,7 +129,6 @@ const App = observer(() => {
         </div>
       )}
       <Navigator isActive={!isSignInPage}>
-
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/updates" element={<Updates />} />
@@ -104,7 +145,7 @@ const App = observer(() => {
           <Route path="/activities" element={<Activities />} />
           <Route path="/view-activity/:activityId" element={<ViewActivity />} />
 
-          <Route path="/user-profile" element={<UserProfile/>} />
+          <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/user-profile-view/:idTeacher" element={<UserProfileView />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
 
