@@ -32,7 +32,7 @@ export default function UserProfile() {
     const groupNames = user?.profile?.user_groups?.map(group => group.groups.nameGroup);
     const schoolNames = user?.profile?.user_schools?.map(school => school.schools.nameSchool);
 
-    console.log(favoritesActivity)
+    console.log(user?.profile?.friends?.length )
 
     return (
         <>
@@ -190,23 +190,29 @@ export default function UserProfile() {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
                                     <h2 className="mr-auto text-base font-medium ml-2">Meu amigo(s)</h2>
                                 </div>
-
-                                {user?.profile?.friends?.map((item, index) => (
-                                    <Link to={`/user-profile-view/${item?.friend?.idTeacher}`} key={index} className="cursor-pointer relative flex items-center p-3 hover:bg-slate-200/60" >
-                                        <div className="image-fit h-8 w-8">
-                                            <button className="bg-gray-400/80 text-white h-8 w-8 scale-110 font-bold overflow-hidden rounded-full " >
-                                                {item?.friend?.photo ? (<img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-8 w-8 object-cover rounded-full" />) : (<div className="rounded-full-black"> {item?.friend?.name?.slice(0, 1).toUpperCase()}</div>)}
-                                            </button>
-                                        </div>
-                                        <div className="ml-2 overflow-hidden">
-                                            <div className="flex items-center">
-                                                <a className="mr-5 truncate font-medium" href="">
-                                                    {item?.friend?.name}
-                                                </a>
+                                {user?.profile?.friends?.length > 0 ? (
+                                    user?.profile?.friends?.map((item, index) => (
+                                        <Link to={`/user-profile-view/${item?.friend?.idTeacher}`} key={index} className="cursor-pointer relative flex items-center p-3 hover:bg-slate-200/60" >
+                                            <div className="image-fit h-8 w-8">
+                                                <button className="bg-gray-400/80 text-white h-8 w-8 scale-110 font-bold overflow-hidden rounded-full " >
+                                                    {item?.friend?.photo ? (<img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-8 w-8 object-cover rounded-full" />) : (<div className="rounded-full-black"> {item?.friend?.name?.slice(0, 1).toUpperCase()}</div>)}
+                                                </button>
                                             </div>
-                                        </div>
-                                    </Link>
-                                ))}
+                                            <div className="ml-2 overflow-hidden">
+                                                <div className="flex items-center">
+                                                    <a className="mr-5 truncate font-medium" href="">
+                                                        {item?.friend?.name}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))
+                                ) : (
+                                    <div className="p-5 text-center" >
+                                        <p><span className="mr-auto ">Fazer novos amigos para conseguir mais!</span>
+                                            <br />Para o adicionar como amigo, vá ao seu perfil e clique em “Seguir”</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
