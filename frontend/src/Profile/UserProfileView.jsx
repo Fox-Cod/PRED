@@ -2,58 +2,72 @@ import React, { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Context } from "../Config/contexts/context";
-import SortTime from "../Components/Other/Other"
-import { profileView, addORdeleteFriend } from "../Config/api/deviceAPI";
+import SortTime from "../Components/Other/Other";
+import { profileView, addORdeleteFriend, createChat } from "../Config/api/deviceAPI";
 import { API_URL } from "../Config/api";
 import { toast } from "react-toastify";
-
 export default function UserProfileView() {
-    const { user } = useContext(Context)
-
+    const { user } = useContext(Context);
     const { idTeacher } = useParams();
-    const [userData, setUserData] = useState('')
-    const [error, setError] = useState('')
-
+    const [userData, setUserData] = useState('');
+    const [error, setError] = useState('');
     const idTeacherNum = parseInt(idTeacher, 10);
 
     const [friendData, setFriendData] = useState({
         idTeacher: user?.profile?.idTeacher,
         idFriend: idTeacherNum
-    })
+    });
 
     const handleFriendToggle = async () => {
         try {
-            const response = await addORdeleteFriend(friendData)
-            if (response.success){
-                toast.success(<p className="font-bold">Adicionou-o com sucesso como amigo!</p>)
-                setTimeout(() => { window.location.reload() , 5000})
+            const response = await addORdeleteFriend(friendData);
+            if (response.success) {
+                toast.success(<p className="font-bold">Adicionou-o com sucesso como amigo!</p>);
+                setTimeout(() => { window.location.reload() }, 5000);
             } else {
-                toast.success(<p className="font-bold">Removido com sucesso da sua lista de amigos!</p>)
-                setTimeout(() => { window.location.reload() , 5000})
+                toast.success(<p className="font-bold">Removido сom sucesso da sua lista de amigos!</p>);
+                setTimeout(() => { window.location.reload() }, 5000);
             }
-        } catch(err) {
-            console.log(err)
+        } catch (err) {
+            console.log(err);
         }
-    }
+    };
+
+    const handleChat = async () => {
+        try {
+            const participants = {
+                participantOneId: user?.profile?.idTeacher,
+                participantTwoId: idTeacherNum
+            };
+            const response = await createChat(participants);
+
+            if (response.success) {
+                toast.success("Chat criado ou aberto com sucesso!");
+                window.location.href = `/chat/${idTeacherNum}`;
+            }
+        } catch (err) {
+            console.error("Erro ao abrir uma sala de conversação:", err);
+            toast.error("Falha ao criar uma sala de conversação.");
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await profileView(idTeacher)
-                setUserData(data)
+                const data = await profileView(idTeacher);
+                setUserData(data);
             } catch (err) {
-                console.log(err)
-                setError(err.response.data.Message)
+                console.log(err);
+                setError(err.response.data.Message);
             }
-        }
+        };
         fetchData();
-    }, [])
+    }, []);
 
     const groupNames = userData?.profile?.user_groups?.map(group => group?.groups?.nameGroup);
     const schoolNames = userData?.profile?.user_schools?.map(school => school?.schools?.nameSchool);
-
-
     const isFriend = user?.profile?.friends?.some(item => item?.idFriend === idTeacherNum);
+
     return (
         <>
             <div className="md:max-w-auto min-h-screen min-w-0 max-w-full flex-1 rounded-[1.3rem] bg-slate-100 px-4 pb-10 shadow-sm before:block before:h-px before:w-full before:content-[''] dark:bg-darkmode-700 md:px-[22px]">
@@ -63,13 +77,16 @@ export default function UserProfileView() {
 
                 <span className="text-danger">{error}</span>
                 <div className="mt-5 grid grid-cols-12 gap-6">
-                    {/* BEGIN: Profile Menu */}
                     <div className="col-span-12 flex flex-col-reverse lg:col-span-4 lg:block 2xl:col-span-3">
                         <div className="intro-y box mt-5 lg:mt-0">
                             <div className="relative flex items-center p-5">
                                 <div className="image-fit h-12 w-12">
-                                    <button className="bg-gray-400/80 text-white h-12 w-12 scale-110 font-bold overflow-hidden rounded-full " >
-                                        {userData?.profile?.avatarUrl && userData?.profile?.avatarUrl?.trim() ? (<img src={userData?.profile?.avatarUrl} alt="Img" />) : (<div classNspaname="rounded-full-black">{userData?.profile?.name?.slice(0, 1).toUpperCase()}</div>)}
+                                    <button className="bg-gray-400/80 text-white h-12 w-12 scale-110 font-bold overflow-hidden rounded-full" >
+                                        {userData?.profile?.avatarUrl ? (
+                                            <img src={userData?.profile?.avatarUrl} alt="Img" />
+                                        ) : (
+                                            <div className="rounded-full-black">{userData?.profile?.name?.slice(0, 1).toUpperCase()}</div>
+                                        )}
                                     </button>
                                 </div>
                                 <div className="ml-4 mr-auto">
@@ -77,39 +94,19 @@ export default function UserProfileView() {
                                     <div className="text-xs text-slate">{userData?.profile?.role === "utilizador" ? "Pessoal" : "Administrador"}</div>
                                 </div>
                             </div>
-                            {user?.profile?.idTeacher === idTeacherNum ? (
-                                null
-                            ) : (
+                            {user?.profile?.idTeacher !== idTeacherNum && (
                                 <div className="flex border-t border-slate-200/60 p-5 dark:border-darkmode-400">
                                     <div className="flex w-full gap-2">
-                                        <button onClick={handleFriendToggle} className="flex-1 transition duration-200 border shadow-sm py-2 flex flex-wrap items-center justify-center px-3 rounded-md font-medium border-primary text-primary [&:hover:not(:disabled)]:bg-primary/10">
-
-                                            {isFriend ? (
-                                                <div className="flex items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                                                        <path d="M2 21a8 8 0 0 1 13.292-6" />
-                                                        <circle cx="10" cy="8" r="5" />
-                                                        <path d="M22 19h-6" />
-                                                    </svg>
-                                                    Não seguir
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                                                        <path d="M2 21a8 8 0 0 1 13.292-6" />
-                                                        <circle cx="10" cy="8" r="5" />
-                                                        <path d="M19 16v6" />
-                                                        <path d="M22 19h-6" />
-                                                    </svg>
-                                                    Seguir
-                                                </div>
-                                            )}
-
+                                        <button onClick={handleFriendToggle} className="flex-1 transition duration-200 border shadow-sm py-2 flex items-center justify-center px-3 rounded-md font-medium border-primary text-primary">
+                                            {isFriend ? "Não seguir" : "Seguir"}
                                         </button>
-                                        <button className="flex-1 transition duration-200 border shadow-sm py-2 flex flex-wrap items-center justify-center px-3 rounded-md font-medium text-white bg-primary [&:hover:not(:disabled)]:bg-primary/90"><svg className="mr-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg>Mensagem</button>
+                                        <button onClick={handleChat} className="flex-1 transition duration-200 border shadow-sm py-2 flex items-center justify-center px-3 rounded-md font-medium text-white bg-primary">
+                                            Mensagem
+                                        </button>
                                     </div>
                                 </div>
                             )}
+
                         </div>
 
                         <div className="intro-y box mt-5">
@@ -138,7 +135,7 @@ export default function UserProfileView() {
                                     <Link to={`/user-profile-view/${item?.friend?.idTeacher}`} key={index} className="cursor-pointer relative flex items-center p-3 hover:bg-slate-200/60">
                                         <div className="image-fit h-8 w-8">
                                             <button className="bg-gray-400/80 text-white h-8 w-8 scale-110 font-bold overflow-hidden rounded-full">
-                                                {item?.friend?.photo ? (<img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-8 w-8 object-cover rounded-full"/> ) : ( <div className="rounded-full-black"> {item?.friend?.name?.slice(0, 1).toUpperCase()}</div>)}
+                                                {item?.friend?.photo ? (<img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-8 w-8 object-cover rounded-full" />) : (<div className="rounded-full-black"> {item?.friend?.name?.slice(0, 1).toUpperCase()}</div>)}
                                             </button>
                                         </div>
                                         <div className="ml-2 overflow-hidden">

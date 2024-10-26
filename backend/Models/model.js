@@ -115,28 +115,40 @@ const Friends = sequelize.define('Friends', {
   idFriend: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' } },
 }, { tableName: 'friends', timestamps: false });
 
+const Chat = sequelize.define('Chat', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  participantOneId: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' }, allowNull: false },
+  participantTwoId: { type: DataTypes.INTEGER,references: { model: Users, key: 'idTeacher' },allowNull: false },
+  lastMessageTime: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+}, { tableName: 'chats', timestamps: false });
+
 const Messages = sequelize.define('Messages', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  chatId: { type: DataTypes.INTEGER,references: { model: Chat, key: 'id' },allowNull: false },
   senderId: { type: DataTypes.INTEGER,references: { model: Users, key: 'idTeacher' } },
   receiverId: { type: DataTypes.INTEGER,references: { model: Users, key: 'idTeacher' } },
   message: { type: DataTypes.TEXT, allowNull: false }, 
   timeStamp: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 }, { tableName: 'messages', timestamps: false });
 
-
-
-// Определение ассоциаций (Связей)
 Users.hasMany(User_Groups, { foreignKey: 'idTeacher', as: 'user_groups' });
 Users.hasMany(User_Schools, { foreignKey: 'idTeacher', as: 'user_schools' });
 
 Users.hasMany(Friends, { foreignKey: 'idTeacher', sourceKey: 'idTeacher', as: 'friends' });
 Users.hasMany(Friends, { foreignKey: 'idFriend', sourceKey: 'idTeacher', as: 'friendOf' });
 
-Users.hasMany(Messages, { foreignKey: 'receiverId', sourceKey: 'idTeacher', as: 'receivedMessages' });
-Users.hasMany(Messages, { foreignKey: 'senderId', sourceKey: 'idTeacher', as: 'sentMessages' });
+Users.hasMany(Messages, { foreignKey: 'senderId', as: 'sentMessages' });
+Users.hasMany(Messages, { foreignKey: 'receiverId', as: 'receivedMessages' });
+Users.hasMany(Chat, { foreignKey: 'participantOneId', as: 'startedChats' });
+Users.hasMany(Chat, { foreignKey: 'participantTwoId', as: 'receivedChats' });
+
+Chat.belongsTo(Users, { foreignKey: 'participantOneId', as: 'participantOne' });
+Chat.belongsTo(Users, { foreignKey: 'participantTwoId', as: 'participantTwo' });
+Chat.hasMany(Messages, { foreignKey: 'chatId', as: 'messages' });
 
 Messages.belongsTo(Users, { foreignKey: 'senderId', as: 'sender' });
 Messages.belongsTo(Users, { foreignKey: 'receiverId', as: 'receiver' });
+Messages.belongsTo(Chat, { foreignKey: 'chatId', as: 'chat' });
 
 Friends.belongsTo(Users, { foreignKey: 'idTeacher', as: 'user' });
 Friends.belongsTo(Users, { foreignKey: 'idFriend', as: 'friend' });
@@ -150,7 +162,6 @@ User_Schools.belongsTo(Schools, { foreignKey: 'idSchool', as: 'schools' });
 Schools.hasMany(User_Schools, { foreignKey: 'idSchool', sourceKey: 'idSchool', as: 'user_schools' });
 Groups.hasMany(User_Groups, { foreignKey: 'idGroup', sourceKey: 'idGroup', as: 'user_groups' });
 
-//Activities
 Activities.hasMany(Activity_Files, { foreignKey: 'idActivity', as: 'activity_files' });
 Activities.hasMany(Activity_Subjects, { foreignKey: 'idActivity', as: 'activity_subjects' });
 Activities.hasMany(Activity_Educations, { foreignKey: 'idActivity', as: 'activity_educations' });
@@ -190,6 +201,7 @@ module.exports = {
   Schools,
   Users,
   Tools,
+  Chat,
   Messages,
   Activities,
   Activity_Files,

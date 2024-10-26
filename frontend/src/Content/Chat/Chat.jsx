@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Context } from "../../Config/contexts/context";
 import { API_URL } from "../../Config/api";
 import { ChatRoom } from "../../Components/Other/Other";
 
 export default function Chat() {
     const { user } = useContext(Context)
+    const { idFriend } = useParams(); 
     return (
         <>
             <div className="md:max-w-auto min-h-screen min-w-0 max-w-full flex-1 rounded-[1.3rem] bg-slate-100 px-4 pb-10 shadow-sm before:block before:h-px before:w-full before:content-[''] dark:bg-darkmode-700 md:px-[22px]">
@@ -146,7 +147,7 @@ export default function Chat() {
                                         </div>
                                     </div>
                                 </div>
-                                <ChatRoom userId={user?.profile?.idTeacher} friendId={2} />
+                                <ChatRoom userId={user?.profile?.idTeacher} friendId={idFriend} />
                             </div>
                         </div>
                     </div>

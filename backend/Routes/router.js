@@ -41,31 +41,32 @@ const chatController = require('../Controllers/ChatController');
 
 const { authenticateToken } = require('../middleware/authMiddleware');
 
-// Определение маршрутов
+// Auth
 router.post('/auth/registration', authController.registration);
 router.post('/auth/login', authController.login);
 router.get('/auth/checking-auth', authenticateToken, authController.check);
 
-// Профиль
+// Profile
 router.get('/user/profile', authenticateToken, userController.getProfileUser);
 router.post('/user/profile-update', authenticateToken, userController.updateProfileUser);
 router.post('/user/upload-avatar', uploadAvatar.single('avatar'), authenticateToken, userController.uploadAvatar);
 
 router.get('/user/profile-view/:idTeacher', userController.getProfileUserToView);
-
 router.post('/user/add-or-delete-friend', userController.addORdeleteFriend);
 
-//Chat
+// Chat
+router.post('/chat/create', authenticateToken, chatController.createChat);
+
 router.post('/chat/send', authenticateToken, chatController.sendMessage);
 router.get('/chat/:userId/:friendId', authenticateToken, chatController.getMessages);
 
-// Активности
+// Activity
 router.post('/add-activity', upload.array('files'), authenticateToken, activityController.postActivity);
 
 router.get('/view-activities', activityController.getAllActivity)
 router.get('/view-activity/:activityId', activityController.getOneActivity)
 
-//Tool
+// Tool
 router.get('/view-tools', toolController.getTools)
 
 //Data (Groups & Schools // Subjects & Educations & Years)
@@ -74,5 +75,5 @@ router.get('/get-subjects-educations-years', otherController.getSubjectsEducatio
 
 //Delete entity
 router.post('/delete-entipy', authenticateToken, otherController.deleteEntity)
-// Экспорт маршрутизатора
+
 module.exports = router;
