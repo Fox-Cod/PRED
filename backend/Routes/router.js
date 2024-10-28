@@ -55,10 +55,13 @@ router.get('/user/profile-view/:idTeacher', userController.getProfileUserToView)
 router.post('/user/add-or-delete-friend', userController.addORdeleteFriend);
 
 // Chat
+router.get('/chat/chats', authenticateToken, chatController.getUserChats);
+
 router.post('/chat/create', authenticateToken, chatController.createChat);
 
-router.post('/chat/send', authenticateToken, chatController.sendMessage);
-router.get('/chat/:userId/:friendId', authenticateToken, chatController.getMessages);
+router.post('/chat/:chatToken/message', authenticateToken, chatController.sendMessage);
+
+router.get('/chat/:chatToken', authenticateToken, chatController.getMessages);
 
 // Activity
 router.post('/add-activity', upload.array('files'), authenticateToken, activityController.postActivity);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { getMessages, sendMessage } from "../../Config/api/deviceAPI";
+import { getUserChats, getMessages, sendMessage } from "../../Config/api/deviceAPI";
 import { API_URL } from "../../Config/api";
 import { io } from 'socket.io-client';
 
@@ -161,55 +161,55 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     );
 };
 
-export const ChatRoom = ({ userId, friendId }) => {
+export const ChatRoom = ({ chatToken }) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-
-    console.log(userId, friendId)
 
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const response = await getMessages(userId, friendId);
+                console.log("Fetching messages for chatToken:", chatToken); 
+                const response = await getMessages(chatToken);
                 setMessages(response);
             } catch (err) {
                 console.log(err);
             }
         };
         fetchMessages();
-    }, [userId, friendId]);
+    }, [chatToken]);
 
-    useEffect(() => {
-        socket.on('receiveMessage', (newMessage) => {
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
-        });
 
-        return () => {
-            socket.off('receiveMessage');
-        };
-    }, []);
+    // useEffect(() => {
+    //     socket.on('receiveMessage', (newMessage) => {
+    //         setMessages((prevMessages) => [...prevMessages, newMessage]);
+    //     });
 
-    const sendMessage = async () => {
-        if (message.trim()) {
-            const messageData = { 
-                senderId: userId, 
-                receiverId: friendId, 
-                content: message,
-                chatId: 1 
-            };
+    //     return () => {
+    //         socket.off('receiveMessage');
+    //     };
+    // }, []);
 
-            socket.emit('sendMessage', messageData);
+    // const sendMessage = async () => {
+    //     if (message.trim()) {
+    //         const messageData = {
+    //             senderId: userId,
+    //             receiverId: friendId,
+    //             content: message,
+    //             chatId: 4
+    //         };
 
-            try {я
-                await sendMessage(messageData);
-                setMessages((prevMessages) => [...prevMessages, messageData]);
-            } catch (error) {
-                console.error("Failed to save message", error);
-            }
+    //         socket.emit('sendMessage', messageData);
 
-            setMessage('');
-        }
-    };
+    //         try {
+    //             await sendMessage(messageData);
+    //             setMessages((prevMessages) => [...prevMessages, messageData]);
+    //         } catch (error) {
+    //             console.error("Failed to save message", error);
+    //         }
+
+    //         setMessage('');
+    //     }
+    // };
 
     return (
         <>
@@ -217,32 +217,30 @@ export const ChatRoom = ({ userId, friendId }) => {
                 {messages.map((msg, index) => (
                     <div
                         key={index}
-                        className={`flex max-w-[90%] items-end mb-4 ${
-                            msg.senderId === userId ? "float-right" : "float-left"
-                        }`}
+                        className={`flex max-w-[100%] items-end mb-2 ${msg.idSender === userId ? "justify-end" : "justify-start"
+                            }`}
                     >
-                        {msg.senderId !== userId && (
+                        {msg.idSender !== userId && (
                             <div className="image-fit relative mr-5 hidden h-10 w-10 flex-none sm:block">
 
                             </div>
                         )}
 
                         <div
-                            className={`px-4 py-3 rounded-t-md ${
-                                msg.senderId === userId
-                                    ? "rounded-l-md bg-primary text-white"
-                                    : "rounded-r-md bg-slate-100 text-slate-500 dark:bg-darkmode-400"
-                            }`}
+                            className={`px-4 py-3 rounded-t-md ${msg.senderId === userId
+                                ? "rounded-l-md bg-primary text-white"
+                                : "rounded-r-md bg-slate-100 text-slate-500 dark:bg-darkmode-400"
+                                }`}
                         >
-                            <strong>{msg.senderId === userId ? "Вы" : "Друг"}:</strong> {msg.content}
+                            <strong>{msg.senderId === userId ? "Вы" : "Друг"}:</strong> {msg.message}
                             <div className="mt-1 text-xs text-opacity-80">
 
                             </div>
                         </div>
 
-                        {msg.senderId === userId && (
+                        {msg.idSender === userId && (
                             <div className="image-fit relative ml-5 hidden h-10 w-10 flex-none sm:block">
-                                
+
                             </div>
                         )}
                     </div>
@@ -255,7 +253,7 @@ export const ChatRoom = ({ userId, friendId }) => {
                     rows={1}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Напишите сообщение..."
+                    placeholder="Messagem..."
                     className="w-full h-[46px] resize-none border-transparent px-5 py-3 shadow-none focus:border-transparent focus:ring-0 rounded-md text-sm placeholder:text-slate-400/90 dark:bg-darkmode-600"
                 />
                 <button onClick={sendMessage} className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white sm:h-10 sm:w-10 ml-2">
@@ -268,4 +266,5 @@ export const ChatRoom = ({ userId, friendId }) => {
         </>
     );
 };
+
 

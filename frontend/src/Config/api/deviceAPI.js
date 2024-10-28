@@ -29,18 +29,23 @@ export const addORdeleteFriend = async (formData) => {
 }
 
 //Chat
+export const getUserChats = async () => {
+    const {data} = await $authHost.get(`api/chat/chats`)
+    return data
+}
+
 export const createChat = async (participants) => {
     const {data} = await $authHost.post(`api/chat/create`, participants)
     return data
 }
 
-export const sendMessage = async (messageData) => {
-    const {data} = await $authHost.post(`api/chat/send`, messageData)
+export const sendMessage = async (chatToken) => {
+    const {data} = await $authHost.post(`api/chat/${(chatToken)}/message`, chatToken)
     return data
 }
 
-export const getMessages = async (idTeacher, idFriend) => {
-    const {data} = await $authHost.get(`api/chat/${(idTeacher)}/${(idFriend)}`)
+export const getMessages = async (chatToken) => {
+    const {data} = await $authHost.get(`api/chat/${(chatToken)}`)
     return data
 }
 

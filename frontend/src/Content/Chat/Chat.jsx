@@ -1,12 +1,40 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Context } from "../../Config/contexts/context";
 import { API_URL } from "../../Config/api";
-import { ChatRoom } from "../../Components/Other/Other";
+import { getUserChats } from "../../Config/api/deviceAPI";
+import SortTime, { ChatRoom } from "../../Components/Other/Other";
 
 export default function Chat() {
-    const { user } = useContext(Context)
-    const { idFriend } = useParams(); 
+    const { user } = useContext(Context);
+    const { idFriend } = useParams();
+
+    const [chats, setChats] = useState([]);
+    const [selectedChatToken, setSelectedChatToken] = useState(null);
+
+    useEffect(() => {
+        const fetchMessages = async () => {
+            try {
+                const response = await getUserChats();
+                setChats(response);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchMessages();
+    }, []);
+
+    const handleChatClick = (chatToken) => {
+        setSelectedChatToken(chatToken);
+    };
+
+    const chat = chats.map((chat) => chat)
+    const participantName =
+    chat?.participantOne && user?.profile?.idTeacher === chat.participantOne.idTeacher
+        ? chat?.participantOne?.name
+        : chat?.participantTwo?.name;
+
+    console.log(chat)
     return (
         <>
             <div className="md:max-w-auto min-h-screen min-w-0 max-w-full flex-1 rounded-[1.3rem] bg-slate-100 px-4 pb-10 shadow-sm before:block before:h-px before:w-full before:content-[''] dark:bg-darkmode-700 md:px-[22px]">
@@ -79,33 +107,34 @@ export default function Chat() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="chat-list scrollbar-hidden mt-4 h-[525px] overflow-y-auto pr-1 pt-1">
-                                    <div className="intro-x cursor-pointer box relative flex items-center p-5">
-                                        <div className="image-fit mr-1 h-12 w-12 flex-none">
-                                            {/* <img
+                                {chats.map((chat, index) =>
+                                    <div key={index} className="chat-list scrollbar-hidden mt-4 h-[525px] overflow-y-auto pr-1 pt-1">
+                                        <Link to={`/chat/${chat.chatToken}`} onClick={() => handleChatClick(chat.chatToken)} className="intro-x cursor-pointer box relative flex items-center p-5">
+                                            <div className="image-fit mr-1 h-12 w-12 flex-none">
+                                                {/* <img
                                                 className="rounded-full"
                                                 src="#"
                                                 alt="#"
                                             /> */}
-                                            <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-success dark:border-darkmode-600"></div>
-                                        </div>
-                                        <div className="ml-2 overflow-hidden">
-                                            <div className="flex items-center">
-                                                <a className="font-medium" href="#">
-                                                    _.name
-                                                </a>
-                                                <div className="ml-auto text-xs text-slate-400">_.time</div>
+                                                <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-success dark:border-darkmode-600"></div>
                                             </div>
-                                            <div className="mt-0.5 w-full truncate text-slate-500">
-                                                _.message
+                                            <div className="ml-2 overflow-hidden">
+                                                <div className="flex items-center">
+                                                    <a className="font-medium" href="#">
+                                                        {participantName}
+                                                    </a>
+                                                    <div className="ml-1 text-xs text-slate-400"><SortTime date={chat.lastMessageTime} /></div>
+                                                </div>
+                                                <div className="mt-0.5 w-full truncate text-slate-500">
+                                                    _.messages
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="absolute right-0 top-0 -mr-1 -mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-white">
-                                            ?
-                                        </div>
+                                            <div className="absolute right-0 top-0 -mr-1 -mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-white">
+                                                ?
+                                            </div>
+                                        </Link>
                                     </div>
-
-                                </div>
+                                )}
                             </div>
 
 
@@ -147,7 +176,7 @@ export default function Chat() {
                                         </div>
                                     </div>
                                 </div>
-                                <ChatRoom userId={user?.profile?.idTeacher} friendId={idFriend} />
+                                <ChatRoom chatToken={selectedChatToken} />
                             </div>
                         </div>
                     </div>

@@ -36,11 +36,12 @@ export default function UserProfileView() {
     const handleChat = async () => {
         try {
             const participants = {
-                participantOneId: user?.profile?.idTeacher,
-                participantTwoId: idTeacherNum
+                idParticipantOne: user?.profile?.idTeacher,
+                idParticipantTwo: idTeacherNum
             };
+            console.log(participants)
             const response = await createChat(participants);
-
+            
             if (response.success) {
                 toast.success("Chat criado ou aberto com sucesso!");
                 window.location.href = `/chat/${idTeacherNum}`;

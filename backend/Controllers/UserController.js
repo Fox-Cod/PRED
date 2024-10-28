@@ -1,4 +1,4 @@
-const { Schools, Groups, Users, Activities, Subjects, Years, Educations, User_Groups, User_Schools, Activity_Files, Activity_Subjects, Activity_Educations, Activity_Years, Friends } = require('../Models/model');
+const { Schools, Groups, Users, Activities, Subjects, Years, Educations, User_Groups, User_Schools, Activity_Files, Activity_Subjects, Activity_Educations, Activity_Years, Friends, Chat } = require('../Models/model');
 
 async function getProfileUser(req, res) {
     const { idTeacher } = req.userToken;

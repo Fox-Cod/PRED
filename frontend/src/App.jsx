@@ -148,8 +148,9 @@ const App = observer(() => {
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/user-profile-view/:idTeacher" element={<UserProfileView />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
+          <Route path="/chat" element={<Chat />} />
 
-          <Route path="/chat/:idFriend" element={<Chat />} />
+          <Route path="/chat/:chatToken" element={<Chat />} />
 
           <Route path="/server-error" element={<ServerError />} />
         </Routes>
