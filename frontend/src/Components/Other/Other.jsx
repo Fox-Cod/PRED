@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { getUserChats, getMessages, sendMessage } from "../../Config/api/deviceAPI";
 import { API_URL } from "../../Config/api";
+import { Context } from "../../Config/contexts/context";
 import { io } from 'socket.io-client';
 
 const socket = io({ API_URL });
@@ -162,6 +163,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 export const ChatRoom = ({ chatToken }) => {
+    const { user } = useContext(Context)
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
 
@@ -172,12 +174,18 @@ export const ChatRoom = ({ chatToken }) => {
                 const response = await getMessages(chatToken);
                 setMessages(response);
             } catch (err) {
-                console.log(err);
+                console.log("Error fetching messages:", err);
             }
         };
-        fetchMessages();
+
+        if (chatToken) { 
+            fetchMessages();
+        } else {
+            console.error("No chatToken provided");
+        }
     }, [chatToken]);
 
+    const idTeacher = user?.profile?.idTeacher
 
     // useEffect(() => {
     //     socket.on('receiveMessage', (newMessage) => {
@@ -217,28 +225,28 @@ export const ChatRoom = ({ chatToken }) => {
                 {messages.map((msg, index) => (
                     <div
                         key={index}
-                        className={`flex max-w-[100%] items-end mb-2 ${msg.idSender === userId ? "justify-end" : "justify-start"
+                        className={`flex max-w-[100%] items-end mb-2 ${msg.idSender === idTeacher ? "justify-end" : "justify-start"
                             }`}
                     >
-                        {msg.idSender !== userId && (
+                        {msg.idSender !== idTeacher && (
                             <div className="image-fit relative mr-5 hidden h-10 w-10 flex-none sm:block">
 
                             </div>
                         )}
 
                         <div
-                            className={`px-4 py-3 rounded-t-md ${msg.senderId === userId
+                            className={`px-4 py-3 rounded-t-md ${msg.senderId === idTeacher
                                 ? "rounded-l-md bg-primary text-white"
                                 : "rounded-r-md bg-slate-100 text-slate-500 dark:bg-darkmode-400"
                                 }`}
                         >
-                            <strong>{msg.senderId === userId ? "Вы" : "Друг"}:</strong> {msg.message}
+                            <strong>{msg.senderId === idTeacher ? "Вы" : "Друг"}:</strong> {msg.message}
                             <div className="mt-1 text-xs text-opacity-80">
 
                             </div>
                         </div>
 
-                        {msg.idSender === userId && (
+                        {msg.idSender === idTeacher && (
                             <div className="image-fit relative ml-5 hidden h-10 w-10 flex-none sm:block">
 
                             </div>

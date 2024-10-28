@@ -45,9 +45,11 @@ export const sendMessage = async (chatToken) => {
 }
 
 export const getMessages = async (chatToken) => {
-    const {data} = await $authHost.get(`api/chat/${(chatToken)}`)
-    return data
-}
+    const trimmedChatToken = chatToken.trim(); // Убираем лишние пробелы
+    const { data } = await $authHost.get(`api/chat/${trimmedChatToken}`);
+    return data;
+};
+
 
 
 // Tool

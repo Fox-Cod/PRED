@@ -1,4 +1,4 @@
-const { Messages, Friends, Chat, Users } = require('../Models/model');
+const { Messages, Friends, Chats, Users } = require('../Models/model');
 const { Op } = require('sequelize');
 const crypto = require('crypto');
 
@@ -27,7 +27,7 @@ async function getUserChats(req, res) {
   const { idTeacher } = req.userToken;
 
   try {
-    const chats = await Chat.findAll({
+    const chats = await Chats.findAll({
       where: {
         [Op.or]: [
           { idParticipantOne: idTeacher },
@@ -71,13 +71,13 @@ async function createChat(req, res) {
     const chatToken = crypto.createHash('sha256').update(participants.join('-')).digest('hex');
 
     console.log(participants, "token:", chatToken)
-    const existingChat = await Chat.findOne({ where: { chatToken } });
+    const existingChat = await Chats.findOne({ where: { chatToken } });
 
     if (existingChat) {
       return res.json({ success: true, chat: existingChat });
     }
 
-    const newChat = await Chat.create({
+    const newChat = await Chats.create({
       idParticipantOne,
       idParticipantTwo,
       chatToken
@@ -111,28 +111,29 @@ async function sendMessage(req, res) {
 
 async function getMessages(req, res) {
   const { chatToken } = req.params;
-
   try {
-    const chat = await Chat.findOne({ where: { chatToken } });
-    if (!chat) {
-      return res.status(404).json({ success: false, message: "Chat não encontrado." });
-    }
+      const chat = await Chats.findOne({ where: { chatToken } });
+      if (!chat) {
+          return res.status(404).json({ success: false, message: "Чат не найден." });
+      }
 
-    const messages = await Messages.findAll({
-      where: { idChat: chat.id },
-      order: [['timeStamp', 'ASC']]
-    });
+      const messages = await Messages.findAll({
+          where: { idChat: chat.id },
+          order: [['timeStamp', 'ASC']]
+      });
 
-    const decryptedMessages = messages.map((msg) => ({
-      ...msg.toJSON(),
-      message: decrypt(msg.message)
-    }));
+      // const decryptedMessages = messages.map((msg) => ({
+      //     ...msg.toJSON(),
+      //     message: decrypt(msg.message)
+      // }));
 
-    res.json({ success: true, messages: decryptedMessages });
+      res.json(messages);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+      console.error("Error retrieving messages:", error);
+      res.status(500).json({ success: false, error: error.message });
   }
 }
+
 
 
 

@@ -115,7 +115,7 @@ const Friends = sequelize.define('Friends', {
   idFriend: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' } },
 }, { tableName: 'friends', timestamps: false });
 
-const Chat = sequelize.define('Chats', {
+const Chats = sequelize.define('Chats', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   idParticipantOne: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' }, allowNull: false },
   idParticipantTwo: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' }, allowNull: false },
@@ -125,7 +125,7 @@ const Chat = sequelize.define('Chats', {
 
 const Messages = sequelize.define('Messages', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  idChat: { type: DataTypes.INTEGER,references: { model: Chat, key: 'id' },allowNull: false },
+  idChat: { type: DataTypes.INTEGER,references: { model: Chats, key: 'id' },allowNull: false },
   idSender: { type: DataTypes.INTEGER,references: { model: Users, key: 'idTeacher' } },
   idReceiver: { type: DataTypes.INTEGER,references: { model: Users, key: 'idTeacher' } },
   message: { type: DataTypes.TEXT, allowNull: false }, 
@@ -140,16 +140,16 @@ Users.hasMany(Friends, { foreignKey: 'idFriend', sourceKey: 'idTeacher', as: 'fr
 
 Users.hasMany(Messages, { foreignKey: 'idSender', as: 'sentMessages' });
 Users.hasMany(Messages, { foreignKey: 'idReceiver', as: 'receivedMessages' });
-Users.hasMany(Chat, { foreignKey: 'idParticipantOne', as: 'startedChats' });
-Users.hasMany(Chat, { foreignKey: 'idParticipantTwo', as: 'receivedChats' });
+Users.hasMany(Chats, { foreignKey: 'idParticipantOne', as: 'startedChats' });
+Users.hasMany(Chats, { foreignKey: 'idParticipantTwo', as: 'receivedChats' });
 
-Chat.belongsTo(Users, { foreignKey: 'idParticipantOne', as: 'participantOne' });
-Chat.belongsTo(Users, { foreignKey: 'idParticipantTwo', as: 'participantTwo' });
-Chat.hasMany(Messages, { foreignKey: 'idChat', as: 'messages' });
+Chats.belongsTo(Users, { foreignKey: 'idParticipantOne', as: 'participantOne' });
+Chats.belongsTo(Users, { foreignKey: 'idParticipantTwo', as: 'participantTwo' });
+Chats.hasMany(Messages, { foreignKey: 'idChat', as: 'messages' });
 
 Messages.belongsTo(Users, { foreignKey: 'idSender', as: 'sender' });
 Messages.belongsTo(Users, { foreignKey: 'idReceiver', as: 'receiver' });
-Messages.belongsTo(Chat, { foreignKey: 'idChat', as: 'chat' });
+Messages.belongsTo(Chats, { foreignKey: 'idChat', as: 'chat' });
 
 Friends.belongsTo(Users, { foreignKey: 'idTeacher', as: 'user' });
 Friends.belongsTo(Users, { foreignKey: 'idFriend', as: 'friend' });
@@ -202,7 +202,7 @@ module.exports = {
   Schools,
   Users,
   Tools,
-  Chat,
+  Chats,
   Messages,
   Activities,
   Activity_Files,
