@@ -228,29 +228,29 @@ export const ChatRoom = ({ chatToken }) => {
                         className={`flex max-w-[100%] items-end mb-2 ${msg.idSender === idTeacher ? "justify-end" : "justify-start"
                             }`}
                     >
-                        {msg.idSender !== idTeacher && (
+                        {/* {msg.idSender !== idTeacher && (
                             <div className="image-fit relative mr-5 hidden h-10 w-10 flex-none sm:block">
 
                             </div>
-                        )}
+                        )} */}
 
                         <div
-                            className={`px-4 py-3 rounded-t-md ${msg.senderId === idTeacher
+                            className={`px-4 py-3 rounded-t-md ${msg.idSender === idTeacher
                                 ? "rounded-l-md bg-primary text-white"
                                 : "rounded-r-md bg-slate-100 text-slate-500 dark:bg-darkmode-400"
                                 }`}
                         >
-                            <strong>{msg.senderId === idTeacher ? "Вы" : "Друг"}:</strong> {msg.message}
+                            <strong>{msg.idSender === idTeacher ? "Вы" : "Друг"}:</strong> {msg.message}
                             <div className="mt-1 text-xs text-opacity-80">
 
                             </div>
                         </div>
-
+{/* 
                         {msg.idSender === idTeacher && (
                             <div className="image-fit relative ml-5 hidden h-10 w-10 flex-none sm:block">
-
+                                
                             </div>
-                        )}
+                        )} */}
                     </div>
                 ))}
                 <div className="clear-both" />
