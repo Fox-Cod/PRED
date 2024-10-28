@@ -170,7 +170,7 @@ export const ChatRoom = ({ chatToken }) => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                console.log("Fetching messages for chatToken:", chatToken); 
+                console.log("Fetching messages for chatToken:", chatToken);
                 const response = await getMessages(chatToken);
                 setMessages(response);
             } catch (err) {
@@ -178,7 +178,7 @@ export const ChatRoom = ({ chatToken }) => {
             }
         };
 
-        if (chatToken) { 
+        if (chatToken) {
             fetchMessages();
         } else {
             console.error("No chatToken provided");
@@ -219,57 +219,88 @@ export const ChatRoom = ({ chatToken }) => {
     //     }
     // };
 
+    const friendName = messages?.map((item) => item.receiver.name)
+    const friendPhoto = messages?.map((item) => item.receiver.photo)
+
     return (
         <>
-            <div className="scrollbar-hidden flex-1 overflow-y-scroll px-5 pt-5">
-                {messages.map((msg, index) => (
-                    <div
-                        key={index}
-                        className={`flex max-w-[100%] items-end mb-2 ${msg.idSender === idTeacher ? "justify-end" : "justify-start"
-                            }`}
-                    >
-                        {/* {msg.idSender !== idTeacher && (
+            <div className="flex h-full flex-col">
+                <div className="flex flex-col border-b border-slate-200/60 px-5 py-4 dark:border-darkmode-400 sm:flex-row">
+                    <div className="flex items-center">
+                        <div className="image-fit relative h-10 w-10 flex-none sm:h-12 sm:w-12">
+                            <img className="rounded-full" src={`${API_URL}/${friendPhoto}`} alt="#" />
+                        </div>
+                        <div className="ml-3 mr-auto">
+                            <div className="text-base font-medium">{friendName}</div>
+                            {/* <div className="text-xs text-slate-500 sm:text-sm">
+                                _.about <span className="mx-1">•</span>
+                                Online?
+                            </div> */}
+                        </div>
+                    </div>
+                    {/* <div className="-mx-5 mt-5 flex items-center border-t border-slate-200/60 px-5 pt-3 sm:mx-0 sm:ml-auto sm:mt-0 sm:border-0 sm:px-0 sm:pt-0">
+                        <a className="h-5 w-5 text-slate-500" href="#">
+                            1
+                        </a>
+                        <a className="ml-5 h-5 w-5 text-slate-500" href="#">
+                            2
+                        </a>
+                        <div className="dropdown relative ml-auto sm:ml-3">
+                            3
+                        </div>
+                    </div> */}
+                </div>
+
+                <div className="scrollbar-hidden flex-1 overflow-y-scroll px-5 pt-5">
+                    {messages.map((msg, index) => (
+                        <div
+                            key={index}
+                            className={`flex max-w-[100%] items-end mb-2 ${msg.idSender === idTeacher ? "justify-end" : "justify-start"
+                                }`}
+                        >
+                            {/* {msg.idSender !== idTeacher && (
                             <div className="image-fit relative mr-5 hidden h-10 w-10 flex-none sm:block">
 
                             </div>
                         )} */}
 
-                        <div
-                            className={`px-4 py-3 rounded-t-md ${msg.idSender === idTeacher
-                                ? "rounded-l-md bg-primary text-white"
-                                : "rounded-r-md bg-slate-100 text-slate-500 dark:bg-darkmode-400"
-                                }`}
-                        >
-                            <strong>{msg.idSender === idTeacher ? "Вы" : "Друг"}:</strong> {msg.message}
-                            <div className="mt-1 text-xs text-opacity-80">
+                            <div
+                                className={`px-4 py-3 rounded-t-md ${msg.idSender === idTeacher
+                                    ? "rounded-l-md bg-primary text-white"
+                                    : "rounded-r-md bg-slate-100 text-slate-500 dark:bg-darkmode-400"
+                                    }`}
+                            >
+                                <strong>{msg.idSender === idTeacher ? "Вы" : "Друг"}:</strong> {msg.message}
+                                <div className="mt-1 text-xs text-opacity-80">
 
+                                </div>
                             </div>
-                        </div>
-{/* 
+                            {/* 
                         {msg.idSender === idTeacher && (
                             <div className="image-fit relative ml-5 hidden h-10 w-10 flex-none sm:block">
                                 
                             </div>
                         )} */}
-                    </div>
-                ))}
-                <div className="clear-both" />
-            </div>
+                        </div>
+                    ))}
+                    <div className="clear-both" />
+                </div>
 
-            <div className="flex items-center border-t border-slate-200/60 pb-10 pt-4 dark:border-darkmode-400 sm:py-4">
-                <textarea
-                    rows={1}
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Messagem..."
-                    className="w-full h-[46px] resize-none border-transparent px-5 py-3 shadow-none focus:border-transparent focus:ring-0 rounded-md text-sm placeholder:text-slate-400/90 dark:bg-darkmode-600"
-                />
-                <button onClick={sendMessage} className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white sm:h-10 sm:w-10 ml-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
-                        <path d="m21.854 2.147-10.94 10.939" />
-                    </svg>
-                </button>
+                <div className="flex items-center border-t border-slate-200/60 pb-10 pt-4 dark:border-darkmode-400 sm:py-4">
+                    <textarea
+                        rows={1}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Messagem..."
+                        className="w-full h-[46px] resize-none border-transparent px-5 py-3 shadow-none focus:border-transparent focus:ring-0 rounded-md text-sm placeholder:text-slate-400/90 dark:bg-darkmode-600"
+                    />
+                    <button onClick={sendMessage} className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white sm:h-10 sm:w-10 ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+                            <path d="m21.854 2.147-10.94 10.939" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </>
     );
