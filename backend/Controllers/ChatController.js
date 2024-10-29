@@ -97,15 +97,27 @@ async function sendMessage(req, res) {
     const { idSender, idReceiver, message, idChat } = req.body;
 
     if (!idSender || !idReceiver || !message || !idChat) {
-      return res.status(400).json({ success: false, message: "Dados insuficientes para enviar uma mensagem." });
+      return res.status(400).json({ success: false, message: "Данные недостаточны для отправки сообщения." });
     }
 
     const newMessage = await Messages.create({ idChat, idSender, idReceiver, message });
+
+    await Chats.update(
+      {
+        lastMessage: message,
+        lastMessageTime: new Date()
+      },
+      {
+        where: { id: idChat }
+      }
+    );
+
     res.status(201).json({ success: true, message: newMessage });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
+
 
 async function getMessages(req, res) {
   const { chatToken } = req.params;

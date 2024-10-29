@@ -23,10 +23,10 @@ export default function UserProfileView() {
             const response = await addORdeleteFriend(friendData);
             if (response.success) {
                 toast.success(<p className="font-bold">Adicionou-o com sucesso como amigo!</p>);
-                setTimeout(() => { window.location.reload() }, 5000);
+                setTimeout(() => { window.location.reload() }, 2000);
             } else {
                 toast.success(<p className="font-bold">Removido сom sucesso da sua lista de amigos!</p>);
-                setTimeout(() => { window.location.reload() }, 5000);
+                setTimeout(() => { window.location.reload() }, 2000);
             }
         } catch (err) {
             console.log(err);

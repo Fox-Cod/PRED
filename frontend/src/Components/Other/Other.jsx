@@ -168,7 +168,7 @@ export const ChatRoom = ({ chatToken }) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [participant, setParticipant] = useState(null);
-    
+
     const idTeacher = user?.profile?.idTeacher;
 
     const idFriend = participant?.idParticipantOne === idTeacher ? participant?.idParticipantTwo : participant?.idParticipantOne;
@@ -181,67 +181,69 @@ export const ChatRoom = ({ chatToken }) => {
                 const response = await getMessages(chatToken);
                 setMessages(response.messages.map(msg => ({
                     ...msg,
-                    timeStamp: new Date(msg.timeStamp), // Преобразование в Date, если нужно
+                    timeStamp: new Date(msg.timeStamp),
                 })));
                 setParticipant(response.participant);
             } catch (err) {
                 console.log("Error fetching messages:", err);
             }
         };
-    
+
         if (chatToken) {
             fetchMessages();
         } else {
             console.error("No chatToken provided");
         }
     }, [chatToken]);
-    
 
-    // Обработка получения сообщений через socket
     useEffect(() => {
         socket.on('receiveMessage', (newMessage) => {
             setMessages((prevMessages) => [...prevMessages, {
                 ...newMessage,
-                timeStamp: new Date(newMessage.timeStamp), // Убедитесь, что время тоже обновляется
+                timeStamp: new Date(newMessage.timeStamp),
             }]);
         });
-    
+
         return () => {
             socket.off('receiveMessage');
         };
     }, []);
-    
+
 
     const sendMessage = async () => {
         if (message.trim()) {
             const messageData = {
                 idSender: idTeacher,
                 idReceiver: idFriend,
-                message, // Используем непосредственно текст сообщения
+                message,
                 idChat: participant.id
             };
-    
+
             try {
-                // Передаем `chatToken` и `messageData` в API
                 await sendMessageAPI(chatToken, messageData);
                 setMessages((prevMessages) => [...prevMessages, messageData]);
-                // Отправка сообщения через socket
                 socket.emit('sendMessage', messageData);
             } catch (error) {
                 console.error("Failed to save message", error);
             }
-    
+
             setMessage('');
         }
-    };    
+    };
 
     return (
         <div className="flex h-full flex-col">
-            {/* Информация о пользователе */}
             <div className="flex flex-col border-b border-slate-200/60 px-5 py-4 dark:border-darkmode-400 sm:flex-row">
                 <div className="flex items-center">
-                    <div className="image-fit relative h-10 w-10 flex-none sm:h-12 sm:w-12">
-                        <img className="rounded-full" src={`${API_URL}/${friendPhoto}`} alt="#" />
+                    <div className="image-fit relative h-12 w-12 flex-none sm:h-12 sm:w-12">
+                        {friendPhoto ? (
+                            <img className="rounded-full w-12 h-12" src={`${API_URL}/${friendPhoto}`} alt="Friend Photo" />
+                        ) : (
+                            <div className="rounded-full bg-gray-400 font-bold text-white flex items-center justify-center w-12 h-12">
+                                {friendName?.slice(0, 1).toUpperCase()}
+                            </div>
+                        )}
+
                     </div>
                     <div className="ml-3 mr-auto">
                         <div className="text-base font-medium">{friendName}</div>
@@ -249,7 +251,6 @@ export const ChatRoom = ({ chatToken }) => {
                 </div>
             </div>
 
-            {/* Отображение сообщений */}
             <div className="scrollbar-hidden flex-1 overflow-y-scroll px-5 pt-5">
                 {messages.map((msg, index) => (
                     <div
@@ -263,14 +264,13 @@ export const ChatRoom = ({ chatToken }) => {
                                 }`}
                         >
                             {msg.message}
-                            
+
                         </div>
                     </div>
                 ))}
                 <div className="clear-both" />
             </div>
 
-            {/* Поле ввода и кнопка отправки */}
             <div className="flex items-center border-t border-slate-200/60 pb-10 pt-4 dark:border-darkmode-400 sm:py-4">
                 <textarea
                     rows={1}

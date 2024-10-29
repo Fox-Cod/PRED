@@ -119,6 +119,7 @@ const Chats = sequelize.define('Chats', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   idParticipantOne: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' }, allowNull: false },
   idParticipantTwo: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' }, allowNull: false },
+  lastMessage: { type: DataTypes.TEXT },
   lastMessageTime: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   chatToken: { type: DataTypes.STRING, unique: true, allowNull: false }
 }, { tableName: 'chats', timestamps: false });

@@ -26,7 +26,7 @@ export default function Chat() {
         setSelectedChatToken(chatToken);
     };
 
-    console.log(selectedChatToken)
+    console.log(chats)
 
     return (
         <>
@@ -47,17 +47,18 @@ export default function Chat() {
                                                 {user?.profile?.friends?.length > 0 ? (
                                                     user?.profile?.friends?.map((item, index) => (
                                                         <Link key={index} to={`/user-profile-view/${item?.friend?.idTeacher}`} className="mr-2 mt-0.5 ml-2 cursor-pointer">
-                                                            <button className="bg-gray-400/80 text-white h-8 w-8 scale-110 font-bold overflow-hidden rounded-full zoom-in">
+                                                           <button className="flex bg-gray-400/80 text-white h-10 w-10 scale-110 font-bold overflow-hidden rounded-full zoom-in">
                                                                 {item?.friend?.photo ? (
                                                                     <img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />
                                                                 ) : (
-                                                                    <div className="rounded-full-black">
+                                                                    <div className="flex items-center justify-center h-full w-full">
                                                                         {item?.friend?.name?.slice(0, 1).toUpperCase()}
                                                                     </div>
                                                                 )}
                                                             </button>
-                                                            <div className="mt-2 mb-2 truncate text-center text-xs text-slate-500">
-                                                                {item?.friend?.name}
+
+                                                            <div className="mb-2 mt-2 truncate text-center text-xs text-slate-500">
+                                                                {item?.friend?.name?.slice(0, 6)}
                                                             </div>
                                                         </Link>
                                                     ))
@@ -88,7 +89,7 @@ export default function Chat() {
                                                     chat?.participantTwo?.photo ? (
                                                         <img src={`${API_URL}/${chat.participantTwo.photo}`} alt="Friend's Avatar" className="rounded-full" />
                                                     ) : (
-                                                        <div className="rounded-full bg-black text-white flex items-center justify-center w-10 h-10">
+                                                        <div className="rounded-full bg-gray-400 font-bold text-white flex items-center justify-center w-12 h-12">
                                                             {chat.participantTwo.name?.slice(0, 1).toUpperCase()}
                                                         </div>
                                                     )
@@ -96,7 +97,7 @@ export default function Chat() {
                                                     chat?.participantOne?.photo ? (
                                                         <img src={`${API_URL}/${chat.participantOne.photo}`} alt="Friend's Avatar" className="rounded-full" />
                                                     ) : (
-                                                        <div className="rounded-full bg-black text-white flex items-center justify-center w-10 h-10">
+                                                        <div className="rounded-full bg-gray-400 font-bold text-white flex items-center justify-center w-12 h-12">
                                                             {chat.participantOne.name?.slice(0, 1).toUpperCase()}
                                                         </div>
                                                     )
@@ -113,7 +114,7 @@ export default function Chat() {
                                                         <SortTime date={chat.lastMessageTime} />
                                                     </div>
                                                 </div>
-                                                <div className="mt-0.5 w-full truncate text-slate-500">_.messages</div>
+                                                <div className="mt-0.5 w-full truncate text-slate-500">{chat.lastMessage || <span className="text-xs text-slate-400">Iniciar a conversa primeiro</span>}</div>
                                             </div>
                                         </Link>
                                     ))}
