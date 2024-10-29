@@ -26,6 +26,8 @@ export default function Chat() {
         setSelectedChatToken(chatToken);
     };
 
+    console.log(selectedChatToken)
+
     return (
         <>
             <div className="md:max-w-auto min-h-screen min-w-0 max-w-full flex-1 rounded-[1.3rem] bg-slate-100 px-4 pb-10 shadow-sm before:block before:h-px before:w-full before:content-[''] dark:bg-darkmode-700 md:px-[22px]">
@@ -79,7 +81,7 @@ export default function Chat() {
                                             key={index}
                                             to={`/chat/${chat.chatToken}`}
                                             onClick={() => handleChatClick(chat.chatToken)}
-                                            className="intro-x cursor-pointer box relative flex items-center p-5"
+                                            className="intro-x cursor-pointer box relative flex items-center p-5 mb-4"
                                         >
                                             <div className="image-fit mr-1 h-12 w-12 flex-none">
                                                 {chat?.participantOne && user?.profile?.idTeacher === chat.participantOne.idTeacher ? (

@@ -100,9 +100,7 @@ async function sendMessage(req, res) {
       return res.status(400).json({ success: false, message: "Dados insuficientes para enviar uma mensagem." });
     }
 
-    const encryptedMessage = encrypt(message);
-
-    const newMessage = await Messages.create({ idSender, idReceiver, message: encryptedMessage, idChat });
+    const newMessage = await Messages.create({ idChat, idSender, idReceiver, message });
     res.status(201).json({ success: true, message: newMessage });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -112,19 +110,28 @@ async function sendMessage(req, res) {
 async function getMessages(req, res) {
   const { chatToken } = req.params;
   try {
-    const chat = await Chats.findOne({ where: { chatToken } });
-    if (!chat) {
+    const participant = await Chats.findOne({
+      where: { chatToken },
+      include: [
+        {
+          model: Users,
+          as: 'participantOne',
+          attributes: ['idTeacher', 'name', 'photo']
+        },
+        {
+          model: Users,
+          as: 'participantTwo',
+          attributes: ['idTeacher', 'name', 'photo']
+        }
+      ]
+    });
+    if (!participant) {
       return res.status(404).json({ success: false, message: "Чат не найден." });
     }
 
     const messages = await Messages.findAll({
-      where: { idChat: chat.id },
-      order: [['timeStamp', 'ASC']],
-      include: [{
-        model: Users, 
-        as: 'receiver',
-        attributes: ['idTeacher', 'name', 'photo']
-      }]
+      where: { idChat: participant.id },
+      order: [['timeStamp', 'ASC']]
     });
 
     // const decryptedMessages = messages.map((msg) => ({
@@ -132,7 +139,7 @@ async function getMessages(req, res) {
     //     message: decrypt(msg.message)
     // }));
 
-    res.json(messages);
+    res.json({ participant, messages });
   } catch (error) {
     console.error("Error retrieving messages:", error);
     res.status(500).json({ success: false, error: error.message });

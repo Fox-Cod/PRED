@@ -39,18 +39,16 @@ export const createChat = async (participants) => {
     return data
 }
 
-export const sendMessage = async (chatToken) => {
-    const {data} = await $authHost.post(`api/chat/${(chatToken)}/message`, chatToken)
-    return data
-}
-
-export const getMessages = async (chatToken) => {
-    const trimmedChatToken = chatToken.trim(); // Убираем лишние пробелы
-    const { data } = await $authHost.get(`api/chat/${trimmedChatToken}`);
+export const sendMessageAPI = async (chatToken, messageData) => {
+    const { data } = await $authHost.post(`api/chat/${chatToken}/message`, messageData);
     return data;
 };
 
 
+export const getMessages = async (chatToken) => {
+    const { data } = await $authHost.get(`api/chat/${chatToken}`);
+    return data;
+};
 
 // Tool
 export const getTools = async () => {
