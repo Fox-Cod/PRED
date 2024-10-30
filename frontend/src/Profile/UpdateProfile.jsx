@@ -138,7 +138,7 @@ export default function UpdateProfile() {
                     <div className="intro-y box mt-5">
                         <div className="flex items-center border-b border-slate-200/60 p-5 dark:border-darkmode-400">
                             <h2 className="mr-auto text-base font-medium">
-                                Personal Information
+                                Personal Information <span className="ml-9"><Link className="text-white" to="https://gifer.com/en/gifs/raccoon">Gif</Link></span>
                             </h2>
                         </div>
                         <form onSubmit={handleSubmit}>

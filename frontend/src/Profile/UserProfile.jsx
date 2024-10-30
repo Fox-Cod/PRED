@@ -32,7 +32,7 @@ export default function UserProfile() {
     const groupNames = user?.profile?.user_groups?.map(group => group.groups.nameGroup);
     const schoolNames = user?.profile?.user_schools?.map(school => school.schools.nameSchool);
 
-    console.log(user?.profile?.friends?.length )
+    console.log(user?.profile?.friends?.length)
 
     return (
         <>
@@ -211,6 +211,9 @@ export default function UserProfile() {
                                     <div className="p-5 text-center" >
                                         <p><span className="mr-auto ">Fazer novos amigos para conseguir mais!</span>
                                             <br />Para o adicionar como amigo, vá ao seu perfil e clique em “Seguir”</p>
+                                        <div className="flex mt-2 justify-center items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                                        </div>
                                     </div>
                                 )}
                             </div>

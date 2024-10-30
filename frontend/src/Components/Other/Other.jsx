@@ -181,7 +181,7 @@ export const ChatRoom = ({ chatToken }) => {
                 const response = await getMessages(chatToken);
                 setMessages(response.messages.map(msg => ({
                     ...msg,
-                    timeStamp: new Date(msg.timeStamp),
+                    timeStamp: new Date(msg.timeStamp)
                 })));
                 setParticipant(response.participant);
             } catch (err) {
@@ -198,10 +198,11 @@ export const ChatRoom = ({ chatToken }) => {
 
     useEffect(() => {
         socket.on('receiveMessage', (newMessage) => {
-            setMessages((prevMessages) => [...prevMessages, {
+            const formattedMessage = {
                 ...newMessage,
-                timeStamp: new Date(newMessage.timeStamp),
-            }]);
+                timeStamp: new Date(newMessage.timeStamp)
+            };
+            setMessages((prevMessages) => [...prevMessages, formattedMessage]);
         });
 
         return () => {
@@ -209,19 +210,22 @@ export const ChatRoom = ({ chatToken }) => {
         };
     }, []);
 
-
     const sendMessage = async () => {
         if (message.trim()) {
             const messageData = {
                 idSender: idTeacher,
                 idReceiver: idFriend,
                 message,
-                idChat: participant.id
+                idChat: participant.id,
+                timeStamp: new Date().toISOString()
             };
 
             try {
                 await sendMessageAPI(chatToken, messageData);
-                setMessages((prevMessages) => [...prevMessages, messageData]);
+                setMessages((prevMessages) => [...prevMessages, {
+                    ...messageData,
+                    timeStamp: new Date(messageData.timeStamp)
+                }]);
                 socket.emit('sendMessage', messageData);
             } catch (error) {
                 console.error("Failed to save message", error);
@@ -229,6 +233,10 @@ export const ChatRoom = ({ chatToken }) => {
 
             setMessage('');
         }
+    };
+
+    const formatTime = (date) => {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     return (
@@ -243,7 +251,6 @@ export const ChatRoom = ({ chatToken }) => {
                                 {friendName?.slice(0, 1).toUpperCase()}
                             </div>
                         )}
-
                     </div>
                     <div className="ml-3 mr-auto">
                         <div className="text-base font-medium">{friendName}</div>
@@ -263,8 +270,8 @@ export const ChatRoom = ({ chatToken }) => {
                                 : "rounded-r-md bg-slate-100 text-slate-500 dark:bg-darkmode-400"
                                 }`}
                         >
-                            {msg.message}
-
+                            <p>{msg.message}</p>
+                            <span className="text-xs">{formatTime(msg.timeStamp)}</span>
                         </div>
                     </div>
                 ))}

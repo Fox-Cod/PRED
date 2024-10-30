@@ -27,9 +27,9 @@ export const ActivityListForForm = ({ limit }) => {
     return (
         <>
             <div class="col-span-12 mt-8">
-                <div class="mt-5 grid grid-cols-12 gap-6">
-                    {activities.length > 0 ? (
-                        activities.slice(0, limit).map((activity, index) => (
+                {activities.length > 0 ? (
+                    <div class="mt-5 grid grid-cols-12 gap-6">
+                        {activities.slice(0, limit).map((activity, index) => (
                             <Link to={`/view-activity/${activity.idActivity}`} className="intro-y col-span-12 sm:col-span-6 xl:col-span-3" key={index}>
                                 <div className="relative zoom-in before:box before:absolute before:inset-x-3 before:mt-3 before:h-full before:bg-slate-50 before:content-['']">
                                     <div className="box p-5">
@@ -46,14 +46,23 @@ export const ActivityListForForm = ({ limit }) => {
                                     </div>
                                 </div>
                             </Link>
-                        ))
-                    ) : (
-                        <div className="text-center">
-                            <p><span className="mr-auto text-base font-medium">Atualmente, não há atividades.</span>
-                                <br />Será um prazer se você for o primeiro! Sua contribuição ajudará a criar uma comunidade e inspirará outros.</p>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center p-12 rounded-2xl shadow-2xl transform transition duration-300">
+                        <div className="flex flex-col text-dark items-center">
+                            <div className="bg-dark p-3 rounded-full mb-4 shadow-md transform transition duration-500 hover:rotate-12">
+                                <svg className="text-white" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg>
+                            </div>
+                            <h2 className="text-4xl font-extrabold mb-3 tracking-wide drop-shadow-lg">
+                                Atividades não encontradas
+                            </h2>
+                            <p className="text-lg font-medium max-w-md mb-6 tracking-wide opacity-90">
+                                Por enquanto, está vazio. Seja o primeiro, adicione atividade e inspire outros!
+                            </p>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </>
     );
@@ -207,7 +216,6 @@ export const ActivityList = () => {
         </>
     );
 };
-
 
 export const ActivityView = ({ activityId }) => {
     const { user } = useContext(Context)
