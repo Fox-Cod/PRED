@@ -130,10 +130,10 @@ export default function Chat() {
                             {selectedChatToken ? (
                                 <ChatRoom chatToken={selectedChatToken} />
                             ) : (
-                                <div className="flex h-full items-center">
+                                <div className="flex h-full w-full items-center">
                                     <div className="mx-auto text-center">
                                         <div className="image-fit mx-auto h-16 w-16 flex-none overflow-hidden rounded-full">
-                                            {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (<img src={user.profile.avatarUrl} alt="Img" />) : (<div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
+                                            {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (<img src={user.profile.avatarUrl} alt="Img" />) : (<div classNspaname="">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
                                         </div>
                                         <div className="mt-3">
                                             <div className="font-medium">

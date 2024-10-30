@@ -60,10 +60,11 @@ export const ActivityListForForm = ({ limit }) => {
 };
 
 export const ActivityList = () => {
-    const { user } = useContext(Context)
+    const { user } = useContext(Context);
     const [activities, setActivities] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [activitiesPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState(''); // Состояние для поиска
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,14 +78,49 @@ export const ActivityList = () => {
         fetchData();
     }, []);
 
+    const filteredActivities = activities.filter(activity => {
+        const term = searchTerm.toLowerCase();
+        return (
+            activity.title.toLowerCase().includes(term) ||
+            activity.activity_subjects?.some(subjectObj => subjectObj.subjects?.nameSubject.toLowerCase().includes(term)) ||
+            activity.activity_educations?.some(educationObj => educationObj.educations?.nameEducation.toLowerCase().includes(term)) ||
+            activity.activity_years?.some(yearObj => yearObj.years?.year.toString().includes(term))
+        );
+    });
+
     const indexOfLastActivity = currentPage * activitiesPerPage;
     const indexOfFirstActivity = indexOfLastActivity - activitiesPerPage;
-    const currentActivities = activities.slice(indexOfFirstActivity, indexOfLastActivity);
+    const currentActivities = filteredActivities.slice(indexOfFirstActivity, indexOfLastActivity);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <>
+            <h2 className="intro-y mt-9 text-lg font-medium">Ver - Actividades</h2>
+            <div className="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
+                <Link
+                    to="/add-post"
+                    className="transition duration-200 border inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary mr-2 shadow-md"
+                >
+                    Adicionar publicação
+                </Link>
+                <div className="mx-auto hidden text-slate-500 md:block">
+                    Mostrando 1 a 10 de {activities.length} entradas
+                </div>
+                <div className="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
+                    <div className="relative w-56 text-slate-500" title="Pesquisa por título, disciplina, nível ou ano...">
+                        <input
+                            type="text"
+                            placeholder="Pesquisar..."
+                            className="disabled:bg-slate-100 disabled:cursor-not-allowed [&[readonly]]:bg-slate-100 [&[readonly]]:cursor-not-allowed transition duration-200 ease-in-out text-sm border-slate-200 shadow-sm rounded-md placeholder:text-slate-400/90 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary focus:border-opacity-40 w-56 pr-10"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <svg className="absolute inset-y-0 right-3 my-auto h-4 w-4 text-slate-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"> <circle cx="11" cy="11" r="8" /> <path d="m21 21-4.3-4.3" /></svg>
+                    </div>
+                </div>
+            </div>
+
             {currentActivities.length > 0 ? (
                 currentActivities.map((activity, index) => (
                     <div className="mt-5" key={index}>
@@ -154,12 +190,13 @@ export const ActivityList = () => {
             )}
             <Pagination
                 currentPage={currentPage}
-                totalPages={Math.ceil(activities.length / activitiesPerPage)}
+                totalPages={Math.ceil(filteredActivities.length / activitiesPerPage)}
                 onPageChange={paginate}
             />
         </>
     );
 };
+
 
 export const ActivityView = ({ activityId }) => {
     const { user } = useContext(Context)
