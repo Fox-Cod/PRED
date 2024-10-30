@@ -64,7 +64,7 @@ export const ActivityList = () => {
     const [activities, setActivities] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [activitiesPerPage] = useState(10);
-    const [searchTerm, setSearchTerm] = useState(''); // Состояние для поиска
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -183,16 +183,27 @@ export const ActivityList = () => {
                     </div>
                 ))
             ) : (
-                <div className="text-center p-5">
-                    <p><span className="mr-auto text-base font-medium">Atualmente, não há atividades.</span>
-                        <br />Será um prazer se você for o primeiro! Sua contribuição ajudará a criar uma comunidade e inspirará outros.</p>
+                <div className="text-center p-12 rounded-2xl shadow-2xl transform transition duration-300">
+                    <div className="flex flex-col text-dark items-center">
+                        <div className="bg-dark p-3 rounded-full mb-4 shadow-md transform transition duration-500 hover:rotate-12">
+                            <svg className="text-white" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg>
+                        </div>
+                        <h2 className="text-4xl font-extrabold mb-3 tracking-wide drop-shadow-lg">
+                            Atividades não encontradas
+                        </h2>
+                        <p className="text-lg font-medium max-w-md mb-6 tracking-wide opacity-90">
+                            Por enquanto, está vazio. Seja o primeiro, adicione atividade e inspire outros!
+                        </p>
+                    </div>
                 </div>
             )}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(filteredActivities.length / activitiesPerPage)}
-                onPageChange={paginate}
-            />
+            {currentActivities.length > 0 ? (
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(filteredActivities.length / activitiesPerPage)}
+                    onPageChange={paginate}
+                />
+            ) : (null)}
         </>
     );
 };
