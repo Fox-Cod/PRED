@@ -62,7 +62,7 @@ export const TopNav = observer(() => {
 
                     {user.isAuth ? (
                         <div className="space-x-4 flex items-center">
-                            <div className="relative  " ref={notificationRef}>
+                            {/* <div className="relative  " ref={notificationRef}>
 
                                 <div
                                     className="flex items-center justify-center cursor-pointer relative block text-white/70 outline-none before:absolute before:right-0 before:top-[-2px] before:h-[8px] before:w-[8px] before:rounded-full before:bg-danger"
@@ -75,7 +75,6 @@ export const TopNav = observer(() => {
                                 </div>
 
 
-                                {/* Notification Dropdown */}
                                 <div
                                     className={`absolute right-0 mt-2 w-[280px] sm:w-[350px] rounded-md border-transparent bg-white shadow-[0px_3px_10px_#00000017] p-5 transform transition-all duration-300 ease-in-out 
                                     ${isNotificationOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 translate-y-2 invisible pointer-events-none'}`}
@@ -101,9 +100,8 @@ export const TopNav = observer(() => {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* Add more notifications here */}
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="relative" ref={dropdownRef}>
                                 <div className="flex items-center cursor-pointer transition duration-200 ease-in-out bg-gray-100 hover:bg-gray-200 hover:text-gray-800 rounded-lg py-1 px-3 " onClick={toggleDropdown}>

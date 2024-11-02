@@ -4,8 +4,8 @@ const cookieParser = require('cookie-parser');
 const routes = require('./Routes/router');
 const sequelize = require('./bd');
 const path = require('path');
-const http = require('http'); // Добавляем HTTP-сервер
-const { Server } = require('socket.io'); // Добавляем Socket.IO
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
 const PORT = 8081;
@@ -33,6 +33,7 @@ app.get('/api/health-check', async (req, res, next) => {
     });
   }
 });
+app.use('/Files', express.static('Files'));
 
 app.use('/Uploads', express.static(path.join(__dirname, 'Uploads')));
 

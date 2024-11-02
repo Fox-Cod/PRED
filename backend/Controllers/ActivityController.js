@@ -83,8 +83,8 @@ async function postActivity(req, res) {
       idTeacher: idTeacher,
       title: title,
       description: description,
-      planning: planning,
-      presentation: presentation
+      planning: planning || null,
+      presentation: presentation || null
     });
 
     const subjectsRecords = subjectsArray.map(SubjectId => ({
@@ -114,13 +114,12 @@ async function postActivity(req, res) {
       for (const file of selectedFiles) {
         const { originalname, size } = file;
         const safeFileName = encodeURIComponent(originalname);
-        const uploadPath = path.resolve(__dirname, `../Files/${safeFileName}`);
-
+      
         const fileType = mimeTypes.lookup(path.extname(originalname));
 
         filesRecords.push({
           idActivity: newActivity.idActivity,
-          filePath: uploadPath,
+          filePath: file.path,
           fileType: fileType,
           fileName: safeFileName,
           fileSize: size

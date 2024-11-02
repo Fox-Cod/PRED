@@ -10,8 +10,8 @@ export const AddAcitvity = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        planning: '' || null,
-        presentation: '' || null,
+        planning: '',
+        presentation: '',
         selectedSubjects: [] || null,
         selectedEducations: [] || null,
         selectedYears: [] || null,
