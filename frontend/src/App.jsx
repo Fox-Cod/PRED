@@ -16,6 +16,8 @@ import ViewActivity from './Content/Form/Activities/ViewActivity';
 import Tool from './Content/Form/Tools/Tool';
 import AddPost from './Content/AddPosts/AddPost';
 
+import ErrorPage from './Content/Home/ErrorPage';
+
 import Chat from './Content/Chat/Chat';
 
 import { Context } from './Config/contexts/context';
@@ -64,7 +66,7 @@ const App = observer(() => {
   const [serverError, setServerError] = useState(false);
   const [serverErrorMessage, setServerErrorMessage] = useState('');
   const [immunityTime, setImmunityTime] = useState(600);
-  const isSignInPage = ['/sign-in', '/', '/sign-up', '/password-reset-email', '/reset-password', '/updates', '/contacts'].includes(location.pathname);
+  const isSignInPage = ['/sign-in', '/', '/sign-up', '/password-reset-email', '/reset-password', '/updates', '/contacts', '/error-page'].includes(location.pathname);
 
   useEffect(() => {
     const randomDelay = Math.floor(Math.random() * 1500);
@@ -153,6 +155,10 @@ const App = observer(() => {
           <Route path="/chat/:chatToken" element={<Chat />} />
 
           <Route path="/server-error" element={<ServerError />} />
+
+          <Route path="/error-page" element={<ErrorPage />} />
+
+          <Route path="*" element={<Navigate to="/error-page" />} />
         </Routes>
       </Navigator>
     </>
