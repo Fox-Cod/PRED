@@ -133,11 +133,21 @@ const Messages = sequelize.define('Messages', {
   timeStamp: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 }, { tableName: 'messages', timestamps: false });
 
+const Activity_Commentary = sequelize.define('Activity_Commentary', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  idTeacher: { type: DataTypes.INTEGER, references: { model: Users, key: 'idTeacher' }, allowNull: false },
+  idActivity: { type: DataTypes.INTEGER, references: { model: Activities, key: 'idActivity' }, allowNull: false },
+  message: { type: DataTypes.TEXT, allowNull: false },
+  publishDate: { type: DataTypes.DATE, defaultValue: DataTypes.NOW, allowNull: false },
+}, { tableName: 'activity_commentary', timestamps: false });
+
 Users.hasMany(User_Groups, { foreignKey: 'idTeacher', as: 'user_groups' });
 Users.hasMany(User_Schools, { foreignKey: 'idTeacher', as: 'user_schools' });
 
 Users.hasMany(Friends, { foreignKey: 'idTeacher', sourceKey: 'idTeacher', as: 'friends' });
 Users.hasMany(Friends, { foreignKey: 'idFriend', sourceKey: 'idTeacher', as: 'friendOf' });
+
+Users.hasMany(Activity_Commentary, { foreignKey: 'idTeacher', sourceKey: 'idTeacher', as: 'activity_commentary' });
 
 Users.hasMany(Messages, { foreignKey: 'idSender', as: 'sentMessages' });
 Users.hasMany(Messages, { foreignKey: 'idReceiver', as: 'receivedMessages' });
@@ -168,6 +178,7 @@ Activities.hasMany(Activity_Files, { foreignKey: 'idActivity', as: 'activity_fil
 Activities.hasMany(Activity_Subjects, { foreignKey: 'idActivity', as: 'activity_subjects' });
 Activities.hasMany(Activity_Educations, { foreignKey: 'idActivity', as: 'activity_educations' });
 Activities.hasMany(Activity_Years, { foreignKey: 'idActivity', as: 'activity_years' });
+Activities.hasMany(Activity_Commentary, { foreignKey: 'idActivity', as: 'activity_commentaries' });
 Activities.belongsTo(Users, { foreignKey: 'idTeacher', as: 'users' });
 
 Activity_Subjects.belongsTo(Activities, { foreignKey: 'idActivity', as: 'activities' });
@@ -178,6 +189,10 @@ Activity_Educations.belongsTo(Educations, { foreignKey: 'idEducation', as: 'educ
 
 Activity_Years.belongsTo(Activities, { foreignKey: 'idActivity', as: 'activities' });
 Activity_Years.belongsTo(Years, { foreignKey: 'idYear', as: 'years' });
+
+Activity_Commentary.belongsTo(Activities, { foreignKey: 'idActivity', as: 'activity' });
+Activity_Commentary.belongsTo(Users, { foreignKey: 'idTeacher', as: 'user' });
+
 
 // Subjects.hasMany(Activity_Subjects, { foreignKey: 'idSubject', as: 'subjects' });
 
@@ -210,6 +225,7 @@ module.exports = {
   Activity_Subjects,
   Activity_Educations,
   Activity_Years,
+  Activity_Commentary,
   Years,
   Friends,
 };

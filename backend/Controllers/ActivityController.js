@@ -1,4 +1,4 @@
-const { Users, Activities, Subjects, Years, Educations, Activity_Files, Activity_Subjects, Activity_Educations, Activity_Years } = require('../Models/model');
+const { Users, Activities, Subjects, Years, Educations, Activity_Files, Activity_Subjects, Activity_Educations, Activity_Years, Activity_Commentary } = require('../Models/model');
 const fs = require('fs');
 const path = require('path');
 const mimeTypes = require('mime-types');
@@ -41,6 +41,8 @@ async function getOneActivity(req, res) {
         { model: Activity_Years, as: 'activity_years', include: { model: Years, as: 'years', attributes: ['idYear', 'year'] } },
 
         { model: Activity_Files, as: 'activity_files', attributes: ['idFile', 'filePath', 'fileType', 'fileName', 'fileSize'] },
+
+        { model: Activity_Commentary, as: 'activity_commentaries', include: { model: Users, as: 'user',attributes: ['idTeacher', 'name', 'photo'] }, attributes: ['id', 'message', 'publishDate'] },
 
         { model: Users, as: 'users', attributes: ['idTeacher', 'name', 'photo'] }
       ]
@@ -137,4 +139,54 @@ async function postActivity(req, res) {
   }
 }
 
-module.exports = { getAllActivity, getOneActivity, postActivity };
+async function postCommentary(req, res) {
+  const { idTeacher } = req.userToken;
+  const { idActivity, message } = req.body;
+
+  const errors = {};
+  if (!idActivity) errors.idActivity = "O campo 'idActivity' é obrigatório.";
+  if (!message || !message) errors.message = "O campo 'message' é obrigatório.";
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ success: false, errors });
+  }
+
+  try {
+    const newCommentary = await Activity_Commentary.create({
+      idTeacher,
+      idActivity,
+      message: message,
+    });
+
+    return res.json({
+      success: true,
+      data: {
+        id: newCommentary.id,
+        idTeacher: newCommentary.idTeacher,
+        idActivity: newCommentary.idActivity,
+        message: newCommentary.message,
+        publishDate: newCommentary.publishDate,
+      },
+      newCommentary,
+      message: 'Comentário adicionado com sucesso.',
+    });
+
+  } catch (error) {
+    console.error('Erro ao adicionar um comentário:', error);
+
+    if (error instanceof ValidationError) {
+      return res.status(400).json({
+        success: false,
+        errors: error.errors.map(e => e.message),
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor',
+    });
+  }
+}
+
+
+module.exports = { getAllActivity, getOneActivity, postActivity, postCommentary };

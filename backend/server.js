@@ -10,10 +10,12 @@ const { Server } = require('socket.io');
 const app = express();
 const PORT = 8081;
 
+require('dotenv').config();
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:5173"],
+  origin: [process.env.SERVER_API], //http://redshare.pt
   methods: ['POST', 'GET', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -26,9 +28,9 @@ app.get('/api/health-check', async (req, res, next) => {
     res.status(200).json({ status: 'Server is up and running', dbStatus: 'Database connection is successful' });
   } catch (error) {
     console.error('Error connecting to the database:', error);
-    res.status(500).json({ 
-      status: 'Server is down', 
-      error: 'Database connection failed', 
+    res.status(500).json({
+      status: 'Server is down',
+      error: 'Database connection failed',
       details: error.message
     });
   }
@@ -42,18 +44,15 @@ app.post('/api/logout', (req, res) => {
   return res.json({ success: true });
 });
 
-// Создаем HTTP-сервер и добавляем Socket.IO
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: 'http://localhost:5173' } });
+const io = new Server(server, { cors: { origin: process.env.SERVER_API } });
 
-// Подключаем Socket.IO
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
   socket.on('sendMessage', (message) => {
-    // Обработка отправки сообщения
     console.log('Message received:', message);
-    io.emit('receiveMessage', message); // Отправляем сообщение всем клиентам
+    io.emit('receiveMessage', message);
   });
 
   socket.on('disconnect', () => {
@@ -70,7 +69,6 @@ io.on('connection', (socket) => {
   }
 })();
 
-// Запускаем HTTP-сервер вместо app.listen
 server.listen(PORT, () => {
   console.log(`Servidor está rodando na porta ${PORT}`);
 });

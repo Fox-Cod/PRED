@@ -1,6 +1,5 @@
 import React from "react";
 import { ActivityList } from "../../../Components/Other/Dublication";
-import { Link } from "react-router-dom";
 
 export default function Activities() {
     return (

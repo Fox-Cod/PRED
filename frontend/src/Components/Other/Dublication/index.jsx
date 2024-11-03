@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import Cookies from 'js-cookie';
 import { Link } from "react-router-dom";
-import { activity, activityView, getGroupsSchools, getSubjectsEducationsAndYears, deleteEntity } from "../../../Config/api/deviceAPI";
+import { activity, activityView, getGroupsSchools, getSubjectsEducationsAndYears, deleteEntity, addCommentary } from "../../../Config/api/deviceAPI";
 import SortTime, { FormatFileSize, Pagination } from "../Other";
 import Select from 'react-select';
 import { Context } from "../../../Config/contexts/context";
@@ -16,13 +16,15 @@ export const ActivityListForForm = ({ limit }) => {
         const fetchData = async () => {
             try {
                 const data = await activity();
-                setActivities(data);
+                const sortedData = data.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+                setActivities(sortedData);
             } catch (err) {
-                console.log(err)
+                console.log(err);
             }
         };
         fetchData();
     }, []);
+
 
     return (
         <>
@@ -79,13 +81,15 @@ export const ActivityList = () => {
         const fetchData = async () => {
             try {
                 const data = await activity();
-                setActivities(data);
+                const sortedData = data.sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+                setActivities(sortedData);
             } catch (err) {
                 console.log(err);
             }
         };
         fetchData();
     }, []);
+
 
     const filteredActivities = activities.filter(activity => {
         const term = searchTerm.toLowerCase();
@@ -269,14 +273,12 @@ export const ActivityView = ({ activityId }) => {
                                     {activityYearsList?.join(', ')}
                                 </span>
                             </a>
-                            <span className="mx-1 font-bold">•</span>
                             <SortTime date={activity.publishDate} />
                         </div>
                     </div>
 
                     <div className="dropdown relative mr-3">
                         <button className="cursor-pointer h-5 w-5 text-slate-500">
-
                             <DeleteEditComponent entityType='activity' entityId={activityId} activity={activity} />
                         </button>
                         <div className="dropdown-menu absolute z-[9999] hidden">
@@ -293,10 +295,7 @@ export const ActivityView = ({ activityId }) => {
                 <div className="flex flex-wrap text-justify indent-[5px] leading-relaxed p-2 overflow-x-auto">
                     {activity?.activity_files && activity?.activity_files.length > 0 ? (
                         activity.activity_files.map((file, fileIndex) => (
-                            <div
-                                className="mt-5 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 p-2"
-                                key={fileIndex}
-                            >
+                            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 p-2" key={fileIndex}>
                                 <div className="file box zoom-in">
                                     <div className="relative rounded-md p-3 bg-white shadow">
                                         <div className="flex justify-center mb-1">
@@ -352,6 +351,119 @@ export const ActivityView = ({ activityId }) => {
         </>
     )
 }
+
+export const Commentary = ({ activityId }) => {
+    const { user } = useContext(Context);
+    const [activity, setActivity] = useState([]);
+    const [sendMessage, setSendMessage] = useState('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await activityView(activityId);
+                setActivity(data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchData();
+    }, [activityId]);
+
+    const handleSave = async (e) => {
+        e.preventDefault();
+
+        if (!sendMessage.trim()) {
+            return toast.error(<p className="font-bold">Um comentário não pode estar vazio.</p>);
+        }
+
+        const submissionData = {
+            idTeacher: user?.profile?.idTeacher,
+            idActivity: activityId,
+            message: sendMessage,
+        };
+
+        try {
+            const response = await addCommentary(submissionData);
+            if (response && response.success) {
+                toast.success(<p className="font-bold">Comentário adicionado com sucesso!</p>);
+
+                setSendMessage('');
+
+                const updatedActivity = await activityView(activityId);
+                setActivity(updatedActivity);
+            } else {
+                toast.error(<p className="font-bold">Erro ao adicionar um comentário.<span>Tente novamente.</span></p>);
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error(<p className="font-bold">Ocorreu um erro ao publicar um comentário.</p>);
+        }
+    };
+
+    return (
+        <div className="px-5">
+            <div className="intro-y">
+                <div className="pt-5 pb-5">
+                    <div className="flex w-full items-center">
+                        <div className="image-fit mr-3 h-8 w-8 flex-none">
+                            {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (
+                                <img className="rounded-full" src={user.profile.avatarUrl} alt="Img" />
+                            ) : (
+                                <div className="rounded-full-black">
+                                    {user.profile.name?.slice(0, 1).toUpperCase()}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex w-full items-center">
+                            <input
+                                type="text"
+                                placeholder="Publicar um comentário..."
+                                value={sendMessage}
+                                onChange={(e) => setSendMessage(e.target.value)}
+                                className="transition w-full duration-200 text-sm shadow-sm placeholder:text-slate-400/90 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary focus:border-opacity-40 rounded-full border-transparent bg-slate-100 pr-10"
+                            />
+                            <button onClick={handleSave} className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white ml-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+                                    <path d="m21.854 2.147-10.94 10.939" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {activity?.activity_commentaries?.map((comment, index) => (
+                <div key={index} className="intro-y border-t pb-10">
+                    <div className="pt-5">
+                        <div className="flex">
+                            <div className="image-fit h-10 w-10 flex-none sm:h-12 sm:w-12">
+                                <Link to={comment?.user?.idTeacher === user?.profile?.idTeacher ? (`/user-profile`) : (`/user-profile-view/${comment?.user?.idTeacher}`)}>
+                                    {comment?.user?.photo ? (
+                                        <img src={`${API_URL}/${comment?.user?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />
+                                    ) : (
+                                        <div className="rounded-full-black">
+                                            {comment?.user?.name?.slice(0, 1).toUpperCase()}
+                                        </div>
+                                    )}
+                                </Link>
+                            </div>
+                            <div className="ml-3 flex-1">
+                                <div className="flex items-center">
+                                    <Link to={`/user-profile-view/${comment?.user?.idTeacher}`} className="font-medium">{comment?.user?.name}</Link>
+                                </div>
+                                <div className="text-xs text-slate-500 sm:text-sm">
+                                    <SortTime date={comment?.publishDate} />
+                                </div>
+                                <div className="mt-2">{comment?.message}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+};
 
 export const GroupsSchools = ({ onChange, settingUser = false }) => {
     const [schoolOptions, setSchoolOptions] = useState([]);
@@ -509,14 +621,15 @@ export const SubjectsEducationsYears = ({ onChange }) => {
 
 export const ActivityEditor = ({ activity, onSave, onClose }) => {
     const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        planning: '',
-        presentation: '',
-        selectedSubjects: [] || null,
-        selectedEducations: [] || null,
-        selectedYears: [] || null,
-        files: [] || null,
+        title: activity?.title || '',
+        description: activity?.description || '',
+        planning: activity?.planning || '',
+        presentation: activity?.presentation || '',
+        selectedSubjects: activity?.activity_subjects || [],
+        selectedEducations: activity?.activity_educations || [],
+        selectedYears: activity?.activity_years || [],
+        files: [],
+        existingFiles: activity?.activity_files || [],
     });
 
     const handleSubjectsEducationsYearsChange = (data) => {
@@ -526,11 +639,11 @@ export const ActivityEditor = ({ activity, onSave, onClose }) => {
         }));
     };
 
-    const handleSave = async () => {
+    const handleSave = async (e) => {
         e.preventDefault();
 
         if (!formData.title || !formData.description) {
-            toast.error(<p className="font-bold">Por favor!<br /> <span className='text-xs text-slate-400'>Preencha todos os campos obrigatórios.</span></p>);
+            toast.error(<p className="font-bold">Por favor!<br /><span className='text-xs text-slate-400'>Preencha todos os campos obrigatórios.</span></p>);
             return;
         }
 
@@ -539,13 +652,12 @@ export const ActivityEditor = ({ activity, onSave, onClose }) => {
         submissionData.append('description', formData.description);
         submissionData.append('planning', formData.planning);
         submissionData.append('presentation', formData.presentation);
-
         submissionData.append('selectedSubjects', JSON.stringify(formData.selectedSubjects.map(option => option.value)));
         submissionData.append('selectedEducations', JSON.stringify(formData.selectedEducations.map(option => option.value)));
         submissionData.append('selectedYears', JSON.stringify(formData.selectedYears.map(option => option.value)));
 
         if (formData.files && formData.files.length > 0) {
-            formData.files.forEach((file, index) => {
+            formData.files.forEach((file) => {
                 submissionData.append('files', file);
             });
         }
@@ -554,64 +666,79 @@ export const ActivityEditor = ({ activity, onSave, onClose }) => {
             const response = await addActivity(submissionData);
             if (response && response.success) {
                 toast.success(<p className="font-bold">Atividade adicionada com sucesso!</p>);
-                window.location.href = '/form';
+                onClose();
             } else {
                 toast.error(<p className="font-bold">Erro ao adicionar atividade. Tente novamente.</p>);
             }
         } catch (err) {
-            console.log(err);
-            setError(err.response.data.errors);
+            console.error(err);
         }
     };
 
-    const activitySubjectsList = activity.activity_subjects?.map((item) => (item?.subjects?.nameSubject))
-    const activityEducationsList = activity.activity_educations?.map((item) => (item?.educations?.nameEducation))
-    const activityYearsList = activity.activity_years?.map((item) => (item?.years?.year))
+    const handleFileDelete = (fileName) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            existingFiles: prevData.existingFiles.filter(file => file.name !== fileName)
+        }));
+        toast.success(`Ficheiro "${fileName}" removido com sucesso.`);
+    };
 
     return (
-
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white dark:bg-gray-800 w-full max-w-3xl p-6 rounded-lg shadow-lg relative">
-                <h2 className="text-xl font-semibold mb-4">Editar atividade</h2>
+                <h2 className="text-xl font-semibold mb-4">Editar Atividade</h2>
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Título</label>
-                        <input type="text" value={formData.title} onChange={(e) => setTitle(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+                        <input
+                            type="text"
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Descrição</label>
-                        <textarea value={formData.description} onChange={(e) => setDescription(e.target.value)} className="mt-1 h-52 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
+                        <textarea
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            className="mt-1 h-52 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        />
                     </div>
-                    {/* <div>
-                        <label className="block text-sm font-medium text-gray-700">Disciplinas</label>
-                        <input type="text" value={activitySubjectsList.join(', ')} onChange={(e) => setSubjects(e.target.value.split(',').map(item => item.trim()))} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Niveis</label>
-                        <input type="text" value={educations.join(', ')} onChange={(e) => setEducations(e.target.value.split(',').map(item => item.trim()))} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Anos</label>
-                        <input type="text" value={years.join(', ')} onChange={(e) => setYears(e.target.value.split(',').map(item => item.trim()))} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" />
-                    </div> */}
 
                     <div className="flex justify-evenly w-full">
                         <SubjectsEducationsYears onChange={handleSubjectsEducationsYearsChange} />
-                        {/* Добавьте сюда любые другие компоненты, которые должны быть равномерно распределены */}
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Ficheiros</label>
-                        <input type="file" multiple onChange={(e) => setFiles([...e.target.files])} className="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100" />
+                        <div className="flex flex-col space-y-2">
+                            {formData.existingFiles.map((file, index) => (
+                                <div key={index} className="flex items-center justify-between">
+                                    <span className="text-gray-600">{file.fileName}</span>
+                                    <button
+                                        onClick={() => handleFileDelete(file.fileName)}
+                                        className="text-red-500 hover:underline"
+                                    >
+                                        Remover
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        <input
+                            type="file"
+                            multiple
+                            onChange={(e) => setFormData({ ...formData, files: [...e.target.files] })}
+                            className="mt-2 block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100"
+                        />
                     </div>
                     <div className="flex justify-end space-x-2 mt-4">
-                        <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Отмена</button>
-                        <button onClick={handleSave} className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Сохранить</button>
+                        <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
+                        <button onClick={handleSave} className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Salvar</button>
                     </div>
                 </div>
             </div>
         </div>
-
     );
 };
 
@@ -772,7 +899,7 @@ export const FileDownloadComponent = ({ activity }) => {
                                 <line x1="12" x2="12" y1="15" y2="3" />
                             </svg>
                         </button>
-                        
+
                         {isDropdownOpen && (
                             <div className="p-2 dropdown-menu absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                                 {activity.activity_files.map((file, fileIndex) => (

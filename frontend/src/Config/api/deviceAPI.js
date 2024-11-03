@@ -73,6 +73,11 @@ export const addActivity = async (formData) => {
     return data;
 }
 
+export const addCommentary = async (formData) => {
+    const { data } = await $authHost.post('api/add-commentary', formData);
+    return data;
+}
+
 // Other
 export const getGroupsSchools = async () => {
     const {data} = await $host.get(`api/get-groups-schools`)
