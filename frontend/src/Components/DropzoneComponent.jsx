@@ -6,22 +6,19 @@ export const DropzoneComponent = ({ onFileChange }) => {
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop: (acceptedFiles) => {
-            setFiles((prevFiles) => {
-                const newFiles = [...prevFiles, ...acceptedFiles];
-                console.log("Accepted Files: ", newFiles); // Добавьте лог для проверки
-                onFileChange(newFiles); // Передаем новые файлы родителю
-                return newFiles;
-            });
+            const newFiles = [...files, ...acceptedFiles];
+            setFiles(newFiles);
+            onFileChange(newFiles);
         },
     });
 
     const removeFile = (fileName) => {
-        setFiles((prevFiles) => {
-            const updatedFiles = prevFiles.filter((file) => file.name !== fileName);
-            onFileChange(updatedFiles); // Обновляем родительское состояние
-            return updatedFiles;
-        });
+        const updatedFiles = files.filter(file => file.name !== fileName);
+        setFiles(updatedFiles);
+        onFileChange(updatedFiles);
     };
+
+    console.log(files, "filesDropzoneComponent")
 
     return (
         <div className="mt-3 w-3/4 xl:mt-0">
@@ -43,10 +40,10 @@ export const DropzoneComponent = ({ onFileChange }) => {
                             <li key={index} className="flex items-center justify-between mt-2">
                                 <span>{file.name}</span>
                                 <button
-                                    className="ml-2 text-red-500"
+                                    className="ml-2 hover:underline text-red-500"
                                     onClick={() => removeFile(file.name)}
                                 >
-                                    Eliminar
+                                    Remover
                                 </button>
                             </li>
                         ))}
@@ -56,3 +53,4 @@ export const DropzoneComponent = ({ onFileChange }) => {
         </div>
     );
 };
+

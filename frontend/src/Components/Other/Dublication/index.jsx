@@ -6,6 +6,7 @@ import SortTime, { FormatFileSize, Pagination } from "../Other";
 import Select from 'react-select';
 import { Context } from "../../../Config/contexts/context";
 import { toast } from 'react-toastify';
+import { DropzoneComponent } from "../../DropzoneComponent";
 
 import { API_URL } from "../../../Config/api";
 
@@ -139,8 +140,8 @@ export const ActivityList = () => {
                     <div className="mt-5" key={index}>
                         <div className="col-span-12 mt-3 md:col-span-6 xl:col-span-4 2xl:col-span-12">
                             <div className="flex items-center">
-                                <div className="before:absolute before:ml-5 before:mt-5 before:block before:h-px before:w-20 before:bg-slate-200 before:dark:bg-darkmode-400">
-                                    <button className="bg-slate-200 image-fit cursor-pointer zoom-in h-10 w-10 flex-none overflow-hidden rounded-full">
+                                <div className="before:absolute before:ml-5 before:mt-5 before:block before:h-px before:w-20 before:bg-gray-400 before:dark:bg-darkmode-400">
+                                    <button className="bg-gray-400 font-bold text-white image-fit cursor-pointer zoom-in h-10 w-10 flex-none overflow-hidden rounded-full">
                                         <span className="rounded-full-black" title={activity.users.name}>
                                             <Link to={activity.users.idTeacher === user.profile.idTeacher ? (`/user-profile`) : (`/user-profile-view/${activity.users.idTeacher}`)}>{activity?.users?.photo ? (<img src={`${API_URL}/${activity?.users?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />) : (<div className="rounded-full-black"> {activity?.users?.name?.slice(0, 1).toUpperCase()}</div>)}</Link>
                                         </span>
@@ -222,6 +223,7 @@ export const ActivityList = () => {
 };
 
 export const ActivityView = ({ activityId }) => {
+    const { user } = useContext(Context)
     const [activity, setActivity] = useState([]);
 
     useEffect(() => {
@@ -279,7 +281,9 @@ export const ActivityView = ({ activityId }) => {
 
                     <div className="dropdown relative mr-3">
                         <button className="cursor-pointer h-5 w-5 text-slate-500">
-                            <DeleteEditComponent entityType='activity' entityId={activityId} activity={activity} />
+                            {activity?.users?.idTeacher === user?.profile?.idTeacher || user?.profile?.role === 'administrador'
+                                ? <DeleteEditComponent entityType='activity' entityId={activityId} activity={activity} />
+                                : null}
                         </button>
                         <div className="dropdown-menu absolute z-[9999] hidden">
                             <div className="dropdown-content rounded-md border-transparent bg-white p-2 shadow-[0px_3px_10px_#00000017] dark:border-transparent dark:bg-darkmode-600 w-40">
@@ -294,29 +298,53 @@ export const ActivityView = ({ activityId }) => {
 
                 <div className="flex flex-wrap text-justify indent-[5px] leading-relaxed p-2 overflow-x-auto">
                     {activity?.activity_files && activity?.activity_files.length > 0 ? (
-                        activity.activity_files.map((file, fileIndex) => (
-                            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 p-2" key={fileIndex}>
-                                <div className="file box zoom-in">
-                                    <div className="relative rounded-md p-3 bg-white shadow">
-                                        <div className="flex justify-center mb-1">
-                                            <div className="mx-auto w-3/5">
-                                                <div className="relative block bg-center bg-no-repeat bg-contain before:content-[''] before:pt-[100%] before:w-full before:block bg-file-icon-directory"></div>
+                        activity.activity_files.slice(0, 4).map((file, fileIndex) => (
+                            <React.Fragment key={fileIndex}>
+                                <div className="w-full sm:w-1/5 p-2">
+                                    <div className="file box zoom-in">
+                                        <div className="relative rounded-md p-3 bg-white shadow">
+                                            <div className="flex justify-center mb-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file">
+                                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                                                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                                </svg>
                                             </div>
-                                        </div>
-                                        <div className="mb-3">
-                                            <p className="mt-1 block truncate font-medium text-left m-0" title={file.fileName}>
-                                                {file.fileName.slice(0, 12)}{file.fileName.length > 12 && '...'}
-                                            </p>
-                                            <div className="mt-0 text-xs text-slate-500 text-left m-0">
-                                                <FormatFileSize bytes={file.fileSize} />
+                                            <div className="mb-3">
+                                                <p className="mt-1 block truncate font-medium text-left m-0" title={file.fileName}>
+                                                    {file.fileName.slice(0, 12)}{file.fileName.length > 12 && '...'}
+                                                </p>
+                                                <div className="mt-0 text-xs text-slate-500 text-left m-0">
+                                                    <FormatFileSize bytes={file.fileSize} />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                {fileIndex === 3 && activity.activity_files.length > 4 && (
+                                    <div className="w-full sm:w-1/5 p-2" key="extra-files">
+                                        <div className="file box zoom-in">
+                                            <div className="relative rounded-md p-3 bg-white shadow">
+                                                <div className="flex justify-center mb-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file">
+                                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                                                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                                    </svg>
+                                                </div>
+                                                <div className="mb-3">
+                                                    <p className="mt-1 block truncate font-medium text-left m-0">
+                                                        E mais {activity.activity_files.length - 4} ficheiros
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </React.Fragment>
                         ))
                     ) : null}
                 </div>
+
 
 
 
@@ -405,7 +433,7 @@ export const Commentary = ({ activityId }) => {
             <div className="intro-y">
                 <div className="pt-5 pb-5">
                     <div className="flex w-full items-center">
-                        <div className="image-fit mr-3 h-8 w-8 flex-none">
+                        <div className="flex items-center justify-center bg-gray-400 text-white font-bold w-8 h-8 mr-2 rounded-full">
                             {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (
                                 <img className="rounded-full" src={user.profile.avatarUrl} alt="Img" />
                             ) : (
@@ -438,11 +466,11 @@ export const Commentary = ({ activityId }) => {
                     <div className="pt-5">
                         <div className="flex">
                             <div className="image-fit h-10 w-10 flex-none sm:h-12 sm:w-12">
-                                <Link to={comment?.user?.idTeacher === user?.profile?.idTeacher ? (`/user-profile`) : (`/user-profile-view/${comment?.user?.idTeacher}`)}>
+                                <Link className="flex items-center justify-center bg-gray-400 text-white font-bold w-11 h-11 rounded-full" to={comment?.user?.idTeacher === user?.profile?.idTeacher ? (`/user-profile`) : (`/user-profile-view/${comment?.user?.idTeacher}`)}>
                                     {comment?.user?.photo ? (
-                                        <img src={`${API_URL}/${comment?.user?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />
+                                        <img src={`${API_URL}/${comment?.user?.photo}`} alt="Img Amigo" className="h-11 w-11 object-cover rounded-full" />
                                     ) : (
-                                        <div className="rounded-full-black">
+                                        <div className="rounded-full">
                                             {comment?.user?.name?.slice(0, 1).toUpperCase()}
                                         </div>
                                     )}
@@ -536,7 +564,6 @@ export const SubjectsEducationsYears = ({ onChange }) => {
     const [subjectOptions, setSubjectOptions] = useState([]);
     const [educationOptions, setEducationOptions] = useState([]);
     const [yearOptions, setYearOptions] = useState([]);
-
     const [formDataSubjectsEducationsYears, setFormDataSubjectsEducationsYears] = useState({
         selectedSubjects: [],
         selectedEducations: [],
@@ -550,17 +577,17 @@ export const SubjectsEducationsYears = ({ onChange }) => {
 
                 const formattedSubjects = subjects.map((subject) => ({
                     value: subject.idSubject,
-                    label: subject.nameSubject
+                    label: subject.nameSubject,
                 }));
 
                 const formattedEducations = educations.map((education) => ({
                     value: education.idEducation,
-                    label: education.nameEducation
+                    label: education.nameEducation,
                 }));
 
                 const formattedYears = years.map((year) => ({
                     value: year.idYear,
-                    label: year.year
+                    label: year.year,
                 }));
 
                 setSubjectOptions(formattedSubjects);
@@ -583,43 +610,105 @@ export const SubjectsEducationsYears = ({ onChange }) => {
 
         onChange({
             ...formDataSubjectsEducationsYears,
-            [type]: updatedValues
+            [type]: updatedValues,
         });
     };
 
     return (
-        <div className="mt-3 w-3/4 xl:mt-0">
-            <div className="flex flex-col items-center sm:flex-row">
-                <Select
-                    placeholder="Selecione uma opção"
-                    className="group-[.form-inline]:flex-1 mt-2 sm:mr-2"
-                    options={subjectOptions}
-                    value={formDataSubjectsEducationsYears.selectedSubjects}
-                    isMulti
-                    onChange={(selectedOptions) => handleSelectChange(selectedOptions, 'selectedSubjects')}
-                />
-                <Select
-                    placeholder="Selecione uma opção"
-                    className="group-[.form-inline]:flex-1 mt-2 sm:mr-2"
-                    options={educationOptions}
-                    value={formDataSubjectsEducationsYears.selectedEducations}
-                    isMulti
-                    onChange={(selectedOptions) => handleSelectChange(selectedOptions, 'selectedEducations')}
-                />
-                <Select
-                    placeholder="Selecione uma opção"
-                    className="group-[.form-inline]:flex-1 mt-2 sm:mr-2"
-                    options={yearOptions}
-                    value={formDataSubjectsEducationsYears.selectedYears}
-                    isMulti
-                    onChange={(selectedOptions) => handleSelectChange(selectedOptions, 'selectedYears')}
-                />
+        <div className="mt-4 w-full max-w-4xl mx-auto">
+            <div className="flex flex-wrap justify-between gap-4">
+                <div className="flex-1 min-w-[200px]">
+                    <Select
+                        placeholder="Selecionar disciplinas"
+                        className="text-gray-700"
+                        classNamePrefix="react-select"
+                        options={subjectOptions}
+                        value={formDataSubjectsEducationsYears.selectedSubjects}
+                        isMulti
+                        onChange={(selectedOptions) => handleSelectChange(selectedOptions, 'selectedSubjects')}
+                        styles={{
+                            control: (provided, state) => ({
+                                ...provided,
+                                borderColor: state.isFocused ? '#3b82f6' : '#D1D5DB',
+                                boxShadow: state.isFocused ? '0 0 0 1px #3b82f6' : '0 0 #D1D5DB',
+                                borderRadius: '0.375rem',
+                                transition: 'border-color 0.2s ease-in-out',
+                            }),
+                            multiValue: (provided) => ({
+                                ...provided,
+                                backgroundColor: '#E5E7EB',
+                            }),
+                            multiValueLabel: (provided) => ({
+                                ...provided,
+                                color: '#111827',
+                            }),
+                        }}
+                    />
+                </div>
+
+                <div className="flex-1 min-w-[200px]">
+                    <Select
+                        placeholder="Selecionar níveis"
+                        className="text-gray-700"
+                        classNamePrefix="react-select"
+                        options={educationOptions}
+                        value={formDataSubjectsEducationsYears.selectedEducations}
+                        isMulti
+                        onChange={(selectedOptions) => handleSelectChange(selectedOptions, 'selectedEducations')}
+                        styles={{
+                            control: (provided, state) => ({
+                                ...provided,
+                                borderColor: state.isFocused ? '#3b82f6' : '#D1D5DB',
+                                boxShadow: state.isFocused ? '0 0 0 1px #3b82f6' : 'none',
+                                borderRadius: '0.375rem',
+                                transition: 'border-color 0.2s ease-in-out',
+                            }),
+                            multiValue: (provided) => ({
+                                ...provided,
+                                backgroundColor: '#E5E7EB',
+                            }),
+                            multiValueLabel: (provided) => ({
+                                ...provided,
+                                color: '#111827',
+                            }),
+                        }}
+                    />
+                </div>
+
+                <div className="flex-1 min-w-[200px]">
+                    <Select
+                        placeholder="Selecionar anos"
+                        className="text-gray-700"
+                        classNamePrefix="react-select"
+                        options={yearOptions}
+                        value={formDataSubjectsEducationsYears.selectedYears}
+                        isMulti
+                        onChange={(selectedOptions) => handleSelectChange(selectedOptions, 'selectedYears')}
+                        styles={{
+                            control: (provided, state) => ({
+                                ...provided,
+                                borderColor: state.isFocused ? '#3b82f6' : '#D1D5DB',
+                                boxShadow: state.isFocused ? '0 0 0 1px #3b82f6' : 'none',
+                                borderRadius: '0.375rem',
+                                transition: 'border-color 0.2s ease-in-out',
+                            }),
+                            multiValue: (provided) => ({
+                                ...provided,
+                                backgroundColor: '#E5E7EB',
+                            }),
+                            multiValueLabel: (provided) => ({
+                                ...provided,
+                                color: '#111827',
+                            }),
+                        }}
+                    />
+                </div>
             </div>
         </div>
     );
 };
 
-export const ActivityEditor = ({ activity, onSave, onClose }) => {
+export const ActivityEditor = ({ activity, onClose }) => {
     const [formData, setFormData] = useState({
         title: activity?.title || '',
         description: activity?.description || '',
@@ -628,40 +717,37 @@ export const ActivityEditor = ({ activity, onSave, onClose }) => {
         selectedSubjects: activity?.activity_subjects || [],
         selectedEducations: activity?.activity_educations || [],
         selectedYears: activity?.activity_years || [],
-        files: [],
-        existingFiles: activity?.activity_files || [],
+        files: activity?.activity_files || [],
     });
 
     const handleSubjectsEducationsYearsChange = (data) => {
         setFormData((prevData) => ({
             ...prevData,
-            ...data,
+            selectedSubjects: Array.from(new Set([...prevData.selectedSubjects, ...(data.selectedSubjects || [])])),
+            selectedEducations: Array.from(new Set([...prevData.selectedEducations, ...(data.selectedEducations || [])])),
+            selectedYears: Array.from(new Set([...prevData.selectedYears, ...(data.selectedYears || [])])),
         }));
     };
 
     const handleSave = async (e) => {
         e.preventDefault();
-
         if (!formData.title || !formData.description) {
             toast.error(<p className="font-bold">Por favor!<br /><span className='text-xs text-slate-400'>Preencha todos os campos obrigatórios.</span></p>);
             return;
         }
 
-        const submissionData = new FormData();
-        submissionData.append('title', formData.title);
-        submissionData.append('description', formData.description);
-        submissionData.append('planning', formData.planning);
-        submissionData.append('presentation', formData.presentation);
-        submissionData.append('selectedSubjects', JSON.stringify(formData.selectedSubjects.map(option => option.value)));
-        submissionData.append('selectedEducations', JSON.stringify(formData.selectedEducations.map(option => option.value)));
-        submissionData.append('selectedYears', JSON.stringify(formData.selectedYears.map(option => option.value)));
+        const submissionData = {
+            title: formData.title,
+            description: formData.description,
+            planning: formData.planning,
+            presentation: formData.presentation,
+            subjects: formData.selectedSubjects,
+            educations: formData.selectedEducations,
+            years: formData.selectedYears,
+            files: formData.files,
+        };
 
-        if (formData.files && formData.files.length > 0) {
-            formData.files.forEach((file) => {
-                submissionData.append('files', file);
-            });
-        }
-
+        console.log("SubmitformDData", submissionData);
         try {
             const response = await addActivity(submissionData);
             if (response && response.success) {
@@ -678,46 +764,82 @@ export const ActivityEditor = ({ activity, onSave, onClose }) => {
     const handleFileDelete = (fileName) => {
         setFormData((prevData) => ({
             ...prevData,
-            existingFiles: prevData.existingFiles.filter(file => file.name !== fileName)
+            files: prevData.files.filter(file => file.name !== fileName),
         }));
         toast.success(`Ficheiro "${fileName}" removido com sucesso.`);
     };
 
+    const handleFileChange = (newFiles) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            files: [...prevData.files, ...newFiles.filter(newFile => 
+                !prevData.files.some(file => file.name === newFile.name))],
+        }));
+    };
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white dark:bg-gray-800 w-full max-w-3xl p-6 rounded-lg shadow-lg relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center rounded-[1.3rem] bg-black bg-opacity-50">
+            <div className="bg-white dark:bg-gray-800 w-full max-w-6xl p-6 rounded-lg shadow-lg relative max-h-[80vh] overflow-y-auto">
                 <h2 className="text-xl font-semibold mb-4">Editar Atividade</h2>
-                <div className="space-y-4">
-                    <div>
+                <form onSubmit={handleSave}>
+                    <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">Título</label>
                         <input
                             type="text"
+                            placeholder="Nome do Título"
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                         />
                     </div>
-                    <div>
+                    <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">Descrição</label>
                         <textarea
+                            placeholder="Digite os seus comentários"
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             className="mt-1 h-52 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                         />
                     </div>
 
-                    <div className="flex justify-evenly w-full">
-                        <SubjectsEducationsYears onChange={handleSubjectsEducationsYearsChange} />
+                    <div className="mt-4 flex flex-wrap gap-4">
+                        <div className="flex-1 min-w-[200px]">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Planning</label>
+                            <input
+                                type="text"
+                                placeholder="Link para o seu plano de aula"
+                                value={formData.planning}
+                                onChange={(e) => setFormData({ ...formData, planning: e.target.value })}
+                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                            />
+                        </div>
+
+                        <div className="flex-1 min-w-[200px]">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Apresentação</label>
+                            <input
+                                type="text"
+                                placeholder="Link para a sua apresentação"
+                                value={formData.presentation}
+                                onChange={(e) => setFormData({ ...formData, presentation: e.target.value })}
+                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                            />
+                        </div>
                     </div>
 
-                    <div>
+                    <SubjectsEducationsYears onChange={handleSubjectsEducationsYearsChange} />
+
+                    <div className="mt-4">
                         <label className="block text-sm font-medium text-gray-700">Ficheiros</label>
+                        <div className="justify-center items-center flex">
+                            <DropzoneComponent onFileChange={handleFileChange} />
+                        </div>
                         <div className="flex flex-col space-y-2">
-                            {formData.existingFiles.map((file, index) => (
+                            <label className="block text-sm font-normal text-gray-700">Ficheiros existentes</label>
+                            {formData.files.map((file, index) => (
                                 <div key={index} className="flex items-center justify-between">
-                                    <span className="text-gray-600">{file.fileName}</span>
+                                    <span className="text-gray-600">{file.fileName || file.name}{file.name ? <span className="ml-3 text-white text-xs rounded p-1 bg-gray-400">Novo</span> : null}</span>
                                     <button
-                                        onClick={() => handleFileDelete(file.fileName)}
+                                        onClick={() => handleFileDelete(file.name)}
                                         className="text-red-500 hover:underline"
                                     >
                                         Remover
@@ -725,18 +847,13 @@ export const ActivityEditor = ({ activity, onSave, onClose }) => {
                                 </div>
                             ))}
                         </div>
-                        <input
-                            type="file"
-                            multiple
-                            onChange={(e) => setFormData({ ...formData, files: [...e.target.files] })}
-                            className="mt-2 block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100"
-                        />
                     </div>
+
                     <div className="flex justify-end space-x-2 mt-4">
-                        <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
-                        <button onClick={handleSave} className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Salvar</button>
+                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancelar</button>
+                        <button type="submit" className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Salvar</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     );

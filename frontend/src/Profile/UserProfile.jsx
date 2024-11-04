@@ -3,7 +3,6 @@ import Cookies from 'js-cookie';
 import { Link } from "react-router-dom";
 import { Context } from "../Config/contexts/context";
 import SortTime from "../Components/Other/Other"
-import teamUpImage from '../assets/images/team-up.svg'
 import { activity } from "../Config/api/deviceAPI";
 import { API_URL } from "../Config/api";
 
@@ -31,8 +30,6 @@ export default function UserProfile() {
 
     const groupNames = user?.profile?.user_groups?.map(group => group.groups.nameGroup);
     const schoolNames = user?.profile?.user_schools?.map(school => school.schools.nameSchool);
-
-    console.log(user?.profile?.friends?.length)
 
     return (
         <>

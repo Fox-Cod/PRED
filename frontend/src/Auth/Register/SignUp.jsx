@@ -63,11 +63,11 @@ export default function SignUp() {
             if (response.success) {
                 window.location.href = '/';
             } else {
-                setErrors({}); 
+                setErrors({});
             }
         } catch (err) {
             console.log(err);
-            setErrors(err.response.data.errors); 
+            setErrors(err.response.data.errors);
         }
     };
 
@@ -77,16 +77,17 @@ export default function SignUp() {
                 <div className="block grid-cols-2 gap-4 xl:grid">
                     <div className="hidden min-h-screen flex-col xl:flex">
                         <Link className="-intro-x flex items-center pt-5" to="/">
-                            <span className="ml-3 text-lg text-white"> EduShare </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" className="lucide lucide-rotate-3d"><path d="M16.466 7.5C15.643 4.237 13.952 2 12 2 9.239 2 7 6.477 7 12s2.239 10 5 10c.342 0 .677-.069 1-.2" /><path d="m15.194 13.707 3.814 1.86-1.86 3.814" /><path d="M19 15.57c-1.804.885-4.274 1.43-7 1.43-5.523 0-10-2.239-10-5s4.477-5 10-5c4.838 0 8.873 1.718 9.8 4" /></svg>
+                            <span className="ml-3 font-bold text-lg text-white"> EduShare </span>
                         </Link>
                         <div className="my-auto">
                             <img className="-intro-x -mt-16 w-1/2" src={img} alt="Illustration" />
                             <div className="-intro-x mt-10 text-4xl font-medium leading-tight text-white">
-                                A few more clicks to <br />
-                                sign up to your account.
+                                Mais alguns cliques para <br />
+                                registar-se na sua conta.
                             </div>
                             <div className="-intro-x mt-5 text-lg text-white text-opacity-70 dark:text-slate-400">
-                                Manage all your e-commerce accounts in one place
+                                Gerir todas as suas contas de comércio <br /> eletrónico num único local
                             </div>
                         </div>
                     </div>

@@ -8,7 +8,7 @@ import backgroundVideo from '../assets/images/backgroundVideo.mp4'
 
 export default function Index() {
     return (
-        <>  
+        <>
             <HomeNavbar />
 
             <div className="relative h-screen bg-primary">
@@ -27,14 +27,14 @@ export default function Index() {
                     <p className="text-lg mb-8">
                         Vamos melhorar as nossas competências através de colaboração, publicações e trabalho em equipa no ambiente educativo.
                     </p>
-                    <Link to="/join" className="bg-primary hover:bg-primarys-dark transition duration-300 py-3 px-6 rounded-md text-white font-medium">
+                    <Link to="/form" className="bg-primary hover:bg-primarys-dark transition duration-300 py-3 px-6 rounded-md text-white font-medium">
                         Junte-se a Nós
                     </Link>
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
             </div>
 
-            <section className="py-16 bg-gray-100">
+            {/* <section className="py-16 bg-gray-100">
                 <div className="container mx-auto px-4">
                     <h2 className="text-4xl font-bold text-center mb-8">Troca de Experiências</h2>
                     <p className="text-center text-lg mb-12">
@@ -56,7 +56,7 @@ export default function Index() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             <section className="py-16 bg-white">
                 <div className="container mx-auto px-4">
@@ -98,21 +98,18 @@ export default function Index() {
                             <p className="text-gray-700 mb-4">
                                 Explore planos de aula detalhados para diferentes níveis de ensino.
                             </p>
-                            <Link to="/lesson-plans" className="text-primary hover:underline">Acessar</Link>
                         </div>
                         <div className="bg-white p-6 rounded-lg shadow-md text-center">
                             <h3 className="text-2xl font-semibold mb-4">Apresentações Interativas</h3>
                             <p className="text-gray-700 mb-4">
                                 Crie e baixe apresentações interativas para usar nas suas aulas.
                             </p>
-                            <Link to="/interactive-presentations" className="text-primary hover:underline">Acessar</Link>
                         </div>
                         <div className="bg-white p-6 rounded-lg shadow-md text-center">
                             <h3 className="text-2xl font-semibold mb-4">Projetos Colaborativos</h3>
                             <p className="text-gray-700 mb-4">
                                 Colabore em projetos de aprendizagem e promova o trabalho em equipa entre alunos.
                             </p>
-                            <Link to="/collaborative-projects" className="text-primary hover:underline">Acessar</Link>
                         </div>
                     </div>
                 </div>
@@ -130,17 +127,23 @@ export default function Index() {
                             <img src={teamCollaborationImage} alt="Trabalho em Equipa" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-3xl font-semibold mb-4">Projetos Colaborativos</h3>
+                            <h3 className="text-3xl font-medium mb-4">Projetos Colaborativos</h3>
                             <p className="text-gray-700 mb-6">
                                 Trabalhe em equipa para desenvolver soluções inovadoras e criar projetos educativos de impacto. Participe em grupos de trabalho, partilhe recursos e crie um ambiente colaborativo entre professores.
                             </p>
-                            <Link to="/teamwork" className="bg-primary text-white py-3 px-6 rounded-md hover:bg-primary-dark">
-                                Saiba mais
-                            </Link>
+                            <h4 className="text-2xl font-medium mb-3">Partilha de Conhecimento</h4>
+                            <p className="text-gray-700 mb-6">
+                                Explore novas metodologias e práticas pedagógicas, aprenda com as experiências dos seus colegas e partilhe o seu próprio conhecimento. Ao colaborar, todos beneficiam de uma rede de apoio e inspiração contínua.
+                            </p>
+                            <h4 className="text-2xl font-medium mb-3">Desenvolvimento de Competências</h4>
+                            <p className="text-gray-700 mb-6">
+                                Ganhe novas competências e melhore as suas capacidades de liderança e comunicação. Ao participar em projetos colaborativos, você desenvolve habilidades cruciais para o trabalho em equipa, a resolução de problemas e a inovação educacional.
+                            </p>
                         </div>
                     </div>
                 </div>
             </section>
+
 
             <section className="py-16 bg-gray-100">
                 <div className="container mx-auto px-4 text-center">

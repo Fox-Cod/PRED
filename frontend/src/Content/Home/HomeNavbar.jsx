@@ -66,7 +66,7 @@ export const HomeNavbar = () => {
                 {user.isAuth ? (
                     <div className="space-x-4">
                         <div className="relative" ref={dropdownRef}>
-                            <button onClick={toggleDropdown} aria-expanded={isDropdownOpen} className="bg-slate-200 cursor-pointer image-fit zoom-in intro-x block h-8 w-8 scale-110 overflow-hidden rounded-full shadow-lg" >
+                            <button onClick={toggleDropdown} aria-expanded={isDropdownOpen} className="bg-gray-400 font-bold text-white cursor-pointer image-fit zoom-in intro-x block h-8 w-8 scale-110 overflow-hidden rounded-full shadow-lg" >
                                 {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (<img src={user.profile.avatarUrl} alt="Img" className="h-8 w-8 rouded-full" />) : (<div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
                             </button>
                             <div
