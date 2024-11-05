@@ -107,7 +107,7 @@ export const TopNav = observer(() => {
                             <div className="relative" ref={dropdownRef}>
                                 <div className="flex items-center cursor-pointer transition duration-200 ease-in-out bg-gray-100 hover:bg-gray-200 hover:text-gray-800 rounded-lg py-1 px-3 " onClick={toggleDropdown}>
                                     <div className="flex items-center justify-center bg-gray-400 text-white font-bold w-8 h-8 rounded-full">
-                                        {user?.profile?.photo && user?.profile?.photo ? (<img src={`${API_URL}/${user?.profile?.photo}`} alt="Img" className="w-8 h-8 rounded-full" />) : (<div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
+                                        {user?.profile?.photo && user?.profile?.photo ? (<img src={`${API_URL}api/${user?.profile?.photo}`} alt="Img" className="w-8 h-8 rounded-full" />) : (<div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
                                     </div>
                                     <div className="ml-3">
                                         <div className="text-sm font-bold">{user.profile.role === "utilizador" ? "Pessoal" : "Administrador"}</div>

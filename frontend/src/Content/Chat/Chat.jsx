@@ -49,7 +49,7 @@ export default function Chat() {
                                                                 <Link key={index} to={`/user-profile-view/${item?.friend?.idTeacher}`} className="mr-2 mt-0.5 ml-2 cursor-pointer">
                                                                     <button className="flex bg-gray-400/80 text-white h-10 w-10 scale-110 font-bold overflow-hidden rounded-full zoom-in">
                                                                         {item?.friend?.photo ? (
-                                                                            <img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />
+                                                                            <img src={`${API_URL}api/${item?.friend?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />
                                                                         ) : (
                                                                             <div className="flex items-center justify-center h-full w-full">
                                                                                 {item?.friend?.name?.slice(0, 1).toUpperCase()}
@@ -85,7 +85,7 @@ export default function Chat() {
                                                     <div className="image-fit mr-1 h-12 w-12 flex-none">
                                                         {chat?.participantOne && user?.profile?.idTeacher === chat.participantOne.idTeacher ? (
                                                             chat?.participantTwo?.photo ? (
-                                                                <img src={`${API_URL}/${chat.participantTwo.photo}`} alt="Friend's Avatar" className="rounded-full" />
+                                                                <img src={`${API_URL}api/${chat.participantTwo.photo}`} alt="Friend's Avatar" className="rounded-full" />
                                                             ) : (
                                                                 <div className="rounded-full bg-gray-400 font-bold text-white flex items-center justify-center w-12 h-12">
                                                                     {chat.participantTwo.name?.slice(0, 1).toUpperCase()}
@@ -93,7 +93,7 @@ export default function Chat() {
                                                             )
                                                         ) : (
                                                             chat?.participantOne?.photo ? (
-                                                                <img src={`${API_URL}/${chat.participantOne.photo}`} alt="Friend's Avatar" className="rounded-full" />
+                                                                <img src={`${API_URL}api/${chat.participantOne.photo}`} alt="Friend's Avatar" className="rounded-full" />
                                                             ) : (
                                                                 <div className="rounded-full bg-gray-400 font-bold text-white flex items-center justify-center w-12 h-12">
                                                                     {chat.participantOne.name?.slice(0, 1).toUpperCase()}
@@ -131,7 +131,7 @@ export default function Chat() {
                                             <div className="mx-auto text-center">
                                                 <div className="image-fit mx-auto h-16 w-16 flex-none overflow-hidden rounded-full">
                                                     {user?.profile?.photo && user?.profile?.photo ? (
-                                                        <img src={`${API_URL}/${user?.profile?.photo}`} alt="Img" />
+                                                        <img src={`${API_URL}api/${user?.profile?.photo}`} alt="Img" />
                                                     ) : (
                                                         <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-400 text-white font-bold">
                                                             {user.profile.name?.slice(0, 1).toUpperCase()}

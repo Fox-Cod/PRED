@@ -27,7 +27,6 @@ useEffect(() => {
       }
     } catch (error) {
       user.setIsAuth(false);
-      user.setUser({});
       console.error("User is not authenticated:", error);
     } finally {
       user.setLoading(false);

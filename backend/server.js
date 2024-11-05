@@ -8,14 +8,14 @@ const http = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
-const PORT = 8081;
+const PORT = process.env.PORT;
 
 require('dotenv').config();
 
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
-  origin: [process.env.SERVER_API], //http://redshare.pt
+  origin: [process.env.SERVER_API],
   methods: ['POST', 'GET', 'PUT', 'DELETE'],
   credentials: true
 }));

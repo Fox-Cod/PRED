@@ -1,6 +1,5 @@
 import {$authHost, $host} from "./index";
 
-
 // Server
 export const healthCheck = async () => {
     const {data} = await $host.get(`api/health-check`)
@@ -55,7 +54,6 @@ export const getTools = async () => {
     const {data} = await $host.get('api/view-tools')
     return data
 }
-
 
 // Activity
 export const activity = async () => {

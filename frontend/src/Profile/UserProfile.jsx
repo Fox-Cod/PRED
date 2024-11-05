@@ -44,7 +44,7 @@ export default function UserProfile() {
                             <div className="relative flex items-center p-5">
                                 <div className="image-fit h-12 w-12">
                                     <button className="bg-gray-400/80 text-white h-12 w-12 scale-110 font-bold overflow-hidden rounded-full " >
-                                        {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (<img src={user.profile.avatarUrl} alt="Img" />) : (<div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
+                                        {user?.profile?.photo && user?.profile?.photo ? (<img src={`${API_URL}api/${user?.profile?.photo}`} alt="Img" />) : (<div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div>)}
                                     </button>
                                 </div>
 
@@ -192,7 +192,7 @@ export default function UserProfile() {
                                         <Link to={`/user-profile-view/${item?.friend?.idTeacher}`} key={index} className="cursor-pointer relative flex items-center p-3 hover:bg-slate-200/60" >
                                             <div className="image-fit h-8 w-8">
                                                 <button className="bg-gray-400/80 text-white h-8 w-8 scale-110 font-bold overflow-hidden rounded-full " >
-                                                    {item?.friend?.photo ? (<img src={`${API_URL}/${item?.friend?.photo}`} alt="Img Amigo" className="h-8 w-8 object-cover rounded-full" />) : (<div className="rounded-full-black"> {item?.friend?.name?.slice(0, 1).toUpperCase()}</div>)}
+                                                    {item?.friend?.photo ? (<img src={`${API_URL}api/${item?.friend?.photo}`} alt="Img Amigo" className="h-8 w-8 object-cover rounded-full" />) : (<div className="rounded-full-black"> {item?.friend?.name?.slice(0, 1).toUpperCase()}</div>)}
                                                 </button>
                                             </div>
                                             <div className="ml-2 overflow-hidden">

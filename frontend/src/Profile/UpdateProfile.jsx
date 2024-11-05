@@ -4,6 +4,7 @@ import { Context } from "../Config/contexts/context";
 import { profileUpdate, avatarUpdate } from "../Config/api/deviceAPI";
 import { GroupsSchools } from "../Components/Other/Dublication";
 import { toast } from 'react-toastify';
+import { API_URL } from "../Config/api";
 
 export default function UpdateProfile() {
     const { user } = useContext(Context);
@@ -97,7 +98,7 @@ export default function UpdateProfile() {
                         <div className="relative flex items-center p-5">
                             <div className="image-fit h-12 w-12">
                                 <button className="bg-gray-400/80 text-white h-12 w-12 scale-110 font-bold overflow-hidden rounded-full">
-                                {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (<img src={user.profile.avatarUrl} alt="Img" /> ) : ( <div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div> )}
+                                {user?.profile?.photo && user?.profile?.photo ? (<img src={`${API_URL}api/${user?.profile?.photo}`} alt="Img" /> ) : ( <div classNspaname="rounded-full-black">{user.profile.name?.slice(0, 1).toUpperCase()}</div> )}
                                 </button>
                             </div>
                             <div className="ml-4 mr-auto">

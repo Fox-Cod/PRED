@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const API_URL = "http://localhost:8081" 
+export const API_URL = "https://redshare.pt/" 
 
 const $host = axios.create({
     baseURL: API_URL

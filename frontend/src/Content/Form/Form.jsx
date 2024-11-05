@@ -36,81 +36,84 @@ export default function Form() {
                     <ActivityListForForm limit={4} />
 
 
-                    <div class="col-span-12 mt-6">
-                        <div class="intro-y block h-10 items-center sm:flex">
-                            <h2 class="mr-5 truncate text-lg font-medium">
+                    <div className="col-span-12 mt-6">
+                        <div className="intro-y block h-10 items-center sm:flex">
+                            <h2 className="mr-5 truncate text-lg font-medium">
                                 Melhores ferramentas
                             </h2>
                         </div>
                         {tools.length > 0 ? (
-                            <div class="intro-y mt-8 overflow-auto sm:mt-0 lg:overflow-visible">
-                                <table data-tw-merge="" className="w-full text-left border-separate border-spacing-y-[10px] sm:mt-2">
-                                    <thead>
-                                        <tr>
-                                            <th data-tw-merge="" className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0">
-                                                NOME DO PRODUTO
-                                            </th>
-                                            <th data-tw-merge="" className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0 text-center">
-                                                APLICAÇÃO
-                                            </th>
-                                            <th data-tw-merge="" className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0 text-center">
-                                                TIPO
-                                            </th>
-                                            <th data-tw-merge="" className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0 text-center">
-                                                ESTADO
-                                            </th>
-                                            <th data-tw-merge="" className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0 text-center">
-                                                DETALHES
-                                            </th>
-                                        </tr>
-                                    </thead>
-
-                                    {tools.slice(0, 5).map((tool, index) => (
-                                        <tbody key={index}>
-                                            <tr data-tw-merge="" className="intro-x">
-                                                <td data-tw-merge="" className="px-5 py-3 border-b dark:border-darkmode-300 box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
-                                                    <a className="whitespace-nowrap font-medium" href="">
-                                                        {tool.title}
-                                                    </a>
-                                                    <div className="mt-0.5 whitespace-nowrap text-xs text-slate-500" title={tool.about}>
-                                                        {tool.about.slice(0, 120) + '...'}
-                                                    </div>
-                                                </td>
-                                                <td data-tw-merge="" className="px-5 py-3 border-b dark:border-darkmode-300 box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
-                                                    <div className="flex items-center justify-center text-secundary" title={tool.application}>
-                                                        <i data-tw-merge="" data-lucide="check-square" className="stroke-1.5 mr-2 h-4 w-4"></i>
-                                                        {tool.application.slice(0, 22) + '...'}
-                                                    </div>
-                                                </td>
-                                                <td data-tw-merge="" className="px-5 py-3 border-b dark:border-darkmode-300 box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
-                                                    <div className="flex items-center justify-center text-secundary" title={tool.type}>
-                                                        <i data-tw-merge="" data-lucide="check-square" className="stroke-1.5 mr-2 h-4 w-4"></i>
-                                                        {tool.type.slice(0, 22) + '...'}
-                                                    </div>
-                                                </td>
-                                                <td data-tw-merge="" className="px-5 py-3 border-b dark:border-darkmode-300 box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
-                                                    <div className="flex items-center justify-center text-success" title={tool.state}>
-                                                        <i data-tw-merge="" data-lucide="check-square" className="stroke-1.5 mr-2 h-4 w-4"></i>
-                                                        {tool.state.slice(0, 22) + '...'}
-                                                    </div>
-                                                </td>
-                                                <td data-tw-merge="" className="px-5 py-3 border-b dark:border-darkmode-300 box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600 before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400">
-                                                    <div className="flex items-center justify-center">
-                                                        <Link className="flex items-center text-primary font-bold" to={tool.link}>
-                                                            Ir para a página
-                                                        </Link>
-                                                    </div>
-                                                </td>
+                            <div className="intro-y mt-8 overflow-x-auto">
+                                <div className="max-w-full overflow-auto">
+                                    <table className="min-w-full text-left border-separate border-spacing-y-[10px]">
+                                        <thead>
+                                            <tr>
+                                                <th className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0">
+                                                    NOME DO PRODUTO
+                                                </th>
+                                                <th className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0 text-center">
+                                                    APLICAÇÃO
+                                                </th>
+                                                <th className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0 text-center">
+                                                    TIPO
+                                                </th>
+                                                <th className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0 text-center">
+                                                    ESTADO
+                                                </th>
+                                                <th className="font-medium px-5 py-3 dark:border-darkmode-300 whitespace-nowrap border-b-0 text-center">
+                                                    DETALHES
+                                                </th>
                                             </tr>
+                                        </thead>
+                                        <tbody>
+                                            {tools.slice(0, 5).map((tool, index) => (
+                                                <tr key={index} className="intro-x">
+                                                    <td className="px-5 py-3 border-b dark:border-darkmode-300 box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
+                                                        <a className="whitespace-nowrap font-medium" href="">
+                                                            {tool.title}
+                                                        </a>
+                                                        <div className="mt-0.5 whitespace-nowrap text-xs text-slate-500" title={tool.about}>
+                                                            {tool.about.slice(0, 120) + '...'}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-5 py-3 border-b dark:border-darkmode-300 box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
+                                                        <div className="flex items-center justify-center text-secundary" title={tool.application}>
+                                                            <i data-tw-merge="" data-lucide="check-square" className="stroke-1.5 mr-2 h-4 w-4"></i>
+                                                            {tool.application.slice(0, 22) + '...'}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-5 py-3 border-b dark:border-darkmode-300 box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
+                                                        <div className="flex items-center justify-center text-secundary" title={tool.type}>
+                                                            <i data-tw-merge="" data-lucide="check-square" className="stroke-1.5 mr-2 h-4 w-4"></i>
+                                                            {tool.type.slice(0, 22) + '...'}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-5 py-3 border-b dark:border-darkmode-300 box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
+                                                        <div className="flex items-center justify-center text-success" title={tool.state}>
+                                                            <i data-tw-merge="" data-lucide="check-square" className="stroke-1.5 mr-2 h-4 w-4"></i>
+                                                            {tool.state.slice(0, 22) + '...'}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-5 py-3 border-b dark:border-darkmode-300 box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
+                                                        <div className="flex items-center justify-center">
+                                                            <Link className="flex items-center text-primary font-bold" to={tool.link}>
+                                                                Ir para a página
+                                                            </Link>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </tbody>
-                                    ))}
-                                </table>
+                                    </table>
+                                </div>
                             </div>
                         ) : (
                             <div className="text-center p-12 rounded-2xl shadow-2xl transform transition duration-300">
                                 <div className="flex flex-col text-dark items-center">
                                     <div className="bg-dark p-3 rounded-full mb-4 shadow-md transform transition duration-500 hover:rotate-12">
-                                        <svg className="text-white" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></svg>
+                                        <svg className="text-white" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />
+                                        </svg>
                                     </div>
                                     <h2 className="text-4xl font-extrabold mb-3 tracking-wide drop-shadow-lg">
                                         Ferramentas não encontradas
@@ -122,6 +125,7 @@ export default function Form() {
                             </div>
                         )}
                     </div>
+
                 </div>
             </div>
         </>

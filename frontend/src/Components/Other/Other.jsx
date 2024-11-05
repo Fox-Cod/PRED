@@ -245,7 +245,7 @@ export const ChatRoom = ({ chatToken }) => {
                 <div className="flex items-center">
                     <div className="image-fit relative h-12 w-12 flex-none sm:h-12 sm:w-12">
                         {friendPhoto ? (
-                            <img className="rounded-full w-12 h-12" src={`${API_URL}/${friendPhoto}`} alt="Friend Photo" />
+                            <img className="rounded-full w-12 h-12" src={`${API_URL}api/${friendPhoto}`} alt="Friend Photo" />
                         ) : (
                             <div className="rounded-full bg-gray-400 font-bold text-white flex items-center justify-center w-12 h-12">
                                 {friendName?.slice(0, 1).toUpperCase()}

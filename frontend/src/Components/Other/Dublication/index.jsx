@@ -29,11 +29,11 @@ export const ActivityListForForm = ({ limit }) => {
 
     return (
         <>
-            <div className="col-span-12 mt-8">
+            <div className="col-span-6 mt-8">
                 {activities.length > 0 ? (
-                    <div className="mt-5 grid grid-cols-12 gap-6">
+                    <div className="mt-5 grid grid-cols-6 gap-6">
                         {activities.slice(0, limit).map((activity, index) => (
-                            <Link to={`/view-activity/${activity.idActivity}`} className="intro-y col-span-12 sm:col-span-6 xl:col-span-3" key={index}>
+                            <Link to={`/view-activity/${activity.idActivity}`} className="intro-y col-span-6 sm:col-span-6 xl:col-span-3" key={index}>
                                 <div className="relative zoom-in before:box before:absolute before:inset-x-3 before:mt-3 before:h-full before:bg-slate-50 before:content-['']">
                                     <div className="box p-5">
                                         <div className="mt-0 text-3xl font-medium leading-8">{activity.title}</div>
@@ -111,7 +111,7 @@ export const ActivityList = () => {
     return (
         <>
             <h2 className="intro-y mt-9 text-lg font-medium">Ver - Actividades</h2>
-            <div className="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
+            <div className="intro-y col-span-6 mt-2 flex flex-wrap items-center sm:flex-nowrap">
                 <Link
                     to="/add-post"
                     className="transition duration-200 border inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary mr-2 shadow-md"
@@ -138,12 +138,12 @@ export const ActivityList = () => {
             {currentActivities.length > 0 ? (
                 currentActivities.map((activity, index) => (
                     <div className="mt-5" key={index}>
-                        <div className="col-span-12 mt-3 md:col-span-6 xl:col-span-4 2xl:col-span-12">
+                        <div className="col-span-6 mt-3 md:col-span-6 xl:col-span-4 1xl:col-span-6">
                             <div className="flex items-center">
                                 <div className="before:absolute before:ml-5 before:mt-5 before:block before:h-px before:w-20 before:bg-gray-400 before:dark:bg-darkmode-400">
                                     <button className="bg-gray-400 font-bold text-white image-fit cursor-pointer zoom-in h-10 w-10 flex-none overflow-hidden rounded-full">
                                         <span className="rounded-full-black" title={activity.users.name}>
-                                            <Link to={activity.users.idTeacher === user.profile.idTeacher ? (`/user-profile`) : (`/user-profile-view/${activity.users.idTeacher}`)}>{activity?.users?.photo ? (<img src={`${API_URL}/${activity?.users?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />) : (<div className="rounded-full-black"> {activity?.users?.name?.slice(0, 1).toUpperCase()}</div>)}</Link>
+                                            <Link to={activity.users.idTeacher === user.profile.idTeacher ? (`/user-profile`) : (`/user-profile-view/${activity.users.idTeacher}`)}>{activity?.users?.photo ? (<img src={`${API_URL}api/${activity?.users?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />) : (<div className="rounded-full-black"> {activity?.users?.name?.slice(0, 1).toUpperCase()}</div>)}</Link>
                                         </span>
                                     </button>
                                     <div className="items-center mt-1">
@@ -248,7 +248,7 @@ export const ActivityView = ({ activityId }) => {
                 <div className="flex items-center border-b border-slate-200/60 px-5 py-4 dark:border-darkmode-400">
                     <div className="image-fit h-10 w-10 flex-none">
                         <button className="bg-gray-400/80 text-white h-10 w-10 scale-110 font-bold overflow-hidden rounded-full " >
-                            {activity?.users?.photo ? (<img src={`${API_URL}/${activity?.users?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />) : (<div className="rounded-full-black"> {activity?.users?.name?.slice(0, 1).toUpperCase()}</div>)}
+                            {activity?.users?.photo ? (<img src={`${API_URL}api/${activity?.users?.photo}`} alt="Img Amigo" className="h-10 w-10 object-cover rounded-full" />) : (<div className="rounded-full-black"> {activity?.users?.name?.slice(0, 1).toUpperCase()}</div>)}
                         </button>
                     </div>
                     <div className="ml-3 mr-auto truncate">
@@ -435,7 +435,7 @@ export const Commentary = ({ activityId }) => {
                     <div className="flex w-full items-center">
                         <div className="flex items-center justify-center bg-gray-400 text-white font-bold w-8 h-8 mr-2 rounded-full">
                             {user?.profile?.photo && user?.profile?.photo ? (
-                                <img className="rounded-full" src={`${API_URL}/${user?.profile?.photo}`} alt="Img" />
+                                <img className="rounded-full" src={`${API_URL}api/${user?.profile?.photo}`} alt="Img" />
                             ) : (
                                 <div className="rounded-full-black">
                                     {user.profile.name?.slice(0, 1).toUpperCase()}
@@ -468,7 +468,7 @@ export const Commentary = ({ activityId }) => {
                             <div className="image-fit h-10 w-10 flex-none sm:h-12 sm:w-12">
                                 <Link className="flex items-center justify-center bg-gray-400 text-white font-bold w-11 h-11 rounded-full" to={comment?.user?.idTeacher === user?.profile?.idTeacher ? (`/user-profile`) : (`/user-profile-view/${comment?.user?.idTeacher}`)}>
                                     {comment?.user?.photo ? (
-                                        <img src={`${API_URL}/${comment?.user?.photo}`} alt="Img Amigo" className="h-11 w-11 object-cover rounded-full" />
+                                        <img src={`${API_URL}api/${comment?.user?.photo}`} alt="Img Amigo" className="h-11 w-11 object-cover rounded-full" />
                                     ) : (
                                         <div className="rounded-full">
                                             {comment?.user?.name?.slice(0, 1).toUpperCase()}
@@ -983,7 +983,7 @@ export const FileDownloadComponent = ({ activity }) => {
             {activity?.activity_files && activity.activity_files.length > 0 ? (
                 activity.activity_files.length === 1 ? (
                     <a
-                        href={`${API_URL}/${activity.activity_files[0].filePath}`}
+                        href={`${API_URL}api/${activity.activity_files[0].filePath}`}
                         download={activity.activity_files[0].fileName}
                         className="tooltip font-medium cursor-pointer intro-x ml-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white transition-all duration-300 hover:bg-opacity-90"
                         title={activity.activity_files[0].fileName}
@@ -1012,7 +1012,7 @@ export const FileDownloadComponent = ({ activity }) => {
                                 {activity.activity_files.map((file, fileIndex) => (
                                     <a
                                         key={fileIndex}
-                                        href={`${API_URL}/${file.filePath}`}
+                                        href={`${API_URL}api/${file.filePath}`}
                                         download={file.fileName}
                                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                                     >
