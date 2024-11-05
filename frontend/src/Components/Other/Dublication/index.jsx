@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import Cookies from 'js-cookie';
 import { Link } from "react-router-dom";
-import { activity, activityView, getGroupsSchools, getSubjectsEducationsAndYears, deleteEntity, addCommentary } from "../../../Config/api/deviceAPI";
+import { activity, activityView, getGroupsSchools, getSubjectsEducationsAndYears, deleteEntity, addCommentary, updateActivity } from "../../../Config/api/deviceAPI";
 import SortTime, { FormatFileSize, Pagination } from "../Other";
 import Select from 'react-select';
 import { Context } from "../../../Config/contexts/context";
@@ -29,9 +29,9 @@ export const ActivityListForForm = ({ limit }) => {
 
     return (
         <>
-            <div class="col-span-12 mt-8">
+            <div className="col-span-12 mt-8">
                 {activities.length > 0 ? (
-                    <div class="mt-5 grid grid-cols-12 gap-6">
+                    <div className="mt-5 grid grid-cols-12 gap-6">
                         {activities.slice(0, limit).map((activity, index) => (
                             <Link to={`/view-activity/${activity.idActivity}`} className="intro-y col-span-12 sm:col-span-6 xl:col-span-3" key={index}>
                                 <div className="relative zoom-in before:box before:absolute before:inset-x-3 before:mt-3 before:h-full before:bg-slate-50 before:content-['']">
@@ -434,8 +434,8 @@ export const Commentary = ({ activityId }) => {
                 <div className="pt-5 pb-5">
                     <div className="flex w-full items-center">
                         <div className="flex items-center justify-center bg-gray-400 text-white font-bold w-8 h-8 mr-2 rounded-full">
-                            {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (
-                                <img className="rounded-full" src={user.profile.avatarUrl} alt="Img" />
+                            {user?.profile?.photo && user?.profile?.photo ? (
+                                <img className="rounded-full" src={`${API_URL}/${user?.profile?.photo}`} alt="Img" />
                             ) : (
                                 <div className="rounded-full-black">
                                     {user.profile.name?.slice(0, 1).toUpperCase()}
@@ -710,6 +710,7 @@ export const SubjectsEducationsYears = ({ onChange }) => {
 
 export const ActivityEditor = ({ activity, onClose }) => {
     const [formData, setFormData] = useState({
+        idActivity: activity?.idActivity,
         title: activity?.title || '',
         description: activity?.description || '',
         planning: activity?.planning || '',
@@ -737,6 +738,7 @@ export const ActivityEditor = ({ activity, onClose }) => {
         }
 
         const submissionData = {
+            idActivity: formData.idActivity,
             title: formData.title,
             description: formData.description,
             planning: formData.planning,
@@ -749,7 +751,7 @@ export const ActivityEditor = ({ activity, onClose }) => {
 
         console.log("SubmitformDData", submissionData);
         try {
-            const response = await addActivity(submissionData);
+            const response = await updateActivity(submissionData);
             if (response && response.success) {
                 toast.success(<p className="font-bold">Atividade adicionada com sucesso!</p>);
                 onClose();
@@ -869,19 +871,14 @@ export const DeleteEditComponent = ({ entityType, entityId, activity }) => {
         setConfirmDeleteVisible(false);
     };
 
-    const handleEdit = () => {
-        setMenuVisible(false);
-        setEditMode(true);
-    };
-
     const handleDeleteClick = () => {
         setConfirmDeleteVisible(true);
     };
 
     const confirmDelete = async () => {
         try {
-            await deleteEntity(entityType, entityId);
-            if (onEditComplete) onEditComplete();
+            const response = await deleteEntity(entityType, entityId);
+            if (response.success) return window.location.href = '/activities';
         } catch (err) {
             console.error(err, 'Type:', entityType, 'Id:', entityId);
         }
@@ -894,12 +891,6 @@ export const DeleteEditComponent = ({ entityType, entityId, activity }) => {
         setMenuVisible(false);
     };
 
-    const handleSave = async (updatedActivity) => {
-        // Your update API call here
-        await updateActivity(entityId, updatedActivity);
-    };
-
-
     return (
         <>
             <button onClick={toggleMenu} className="transition duration-200 border shadow-sm inline-flex items-center justify-center h-10 w-10 rounded-full font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&:hover:not(:disabled)]:bg-opacity-90 [&:hover:not(:disabled)]:border-opacity-90 [&:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-secondary/70 border-secondary/70 text-slate-500 dark:border-darkmode-400 dark:bg-darkmode-400 dark:text-slate-300 [&:hover:not(:disabled)]:bg-slate-100 [&:hover:not(:disabled)]:border-slate-100 [&:hover:not(:disabled)]:dark:border-darkmode-300/80 [&:hover:not(:disabled)]:dark:bg-darkmode-300/80">
@@ -908,10 +899,10 @@ export const DeleteEditComponent = ({ entityType, entityId, activity }) => {
 
             <div className={`absolute right-0 mt-2 w-56 rounded-md border border-gray-100 shadow-lg bg-white p-2 transform transition-all duration-300 ease-in-out
                     ${menuVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
-                <a onClick={handleEdit} className="cursor-pointer flex items-center p-2 transition duration-300 ease-in-out rounded-md hover:bg-slate-200/60 dark:bg-darkmode-600 dark:hover:bg-darkmode-400 dropdown-item">
+                {/* <a onClick={handleEdit} className="cursor-pointer flex items-center p-2 transition duration-300 ease-in-out rounded-md hover:bg-slate-200/60 dark:bg-darkmode-600 dark:hover:bg-darkmode-400 dropdown-item">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pencil"> <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /> <path d="m15 5 4 4" /></svg>
                     <span className="ml-2">Editar</span>
-                </a>
+                </a> */}
 
 
                 {!confirmDeleteVisible ? (
@@ -932,7 +923,6 @@ export const DeleteEditComponent = ({ entityType, entityId, activity }) => {
             {editMode && (
                 <ActivityEditor
                     activity={activity}
-                    onSave={handleSave}
                     onClose={() => setEditMode(false)}
                 />
             )}

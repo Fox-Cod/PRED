@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { HomeNavbar } from "./Home/HomeNavbar";
-import teamUpImage from '../assets/images/team-up.svg'
+import teamUpImage from '../assets/images/bgindex.jpg'
 import personalDataImage from '../assets/images/personal-data.svg'
 import teamCollaborationImage from '../assets/images/team-collaboration.svg'
 import backgroundVideo from '../assets/images/backgroundVideo.mp4'
@@ -13,18 +13,20 @@ export default function Index() {
 
             <div className="relative h-screen bg-primary">
                 <div className="absolute inset-0 overflow-hidden">
-                    <video
+                    {/* <video
                         className="absolute inset-0 w-full h-full object-cover"
                         src={backgroundVideo}
                         autoPlay
                         loop
                         muted
                         playsInline
-                    ></video>
+                    ></video> */}
+                    <img src={teamUpImage} className="absolute inset-0 w-full h-full object-cover" />
                 </div>
                 <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6">
-                    <h1 className="text-5xl font-bold mb-4">Partilha de Conhecimento</h1>
-                    <p className="text-lg mb-8">
+                    <h1 className="text-5xl font-bold">EduShare</h1>
+                    <span className="text-normal font-bold mb-2">Partilha de Recursos Educativos Digitais</span>
+                    <p className="text-lg mb-5 max-w-xl leading-relaxed">
                         Vamos melhorar as nossas competências através de colaboração, publicações e trabalho em equipa no ambiente educativo.
                     </p>
                     <Link to="/form" className="bg-primary hover:bg-primarys-dark transition duration-300 py-3 px-6 rounded-md text-white font-medium">

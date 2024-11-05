@@ -130,8 +130,8 @@ export default function Chat() {
                                         <div className="flex h-full w-full items-center">
                                             <div className="mx-auto text-center">
                                                 <div className="image-fit mx-auto h-16 w-16 flex-none overflow-hidden rounded-full">
-                                                    {user?.profile?.avatarUrl && user?.profile?.avatarUrl.trim() ? (
-                                                        <img src={user.profile.avatarUrl} alt="Img" />
+                                                    {user?.profile?.photo && user?.profile?.photo ? (
+                                                        <img src={`${API_URL}/${user?.profile?.photo}`} alt="Img" />
                                                     ) : (
                                                         <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-400 text-white font-bold">
                                                             {user.profile.name?.slice(0, 1).toUpperCase()}

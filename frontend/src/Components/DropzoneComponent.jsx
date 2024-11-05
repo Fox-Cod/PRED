@@ -18,8 +18,6 @@ export const DropzoneComponent = ({ onFileChange }) => {
         onFileChange(updatedFiles);
     };
 
-    console.log(files, "filesDropzoneComponent")
-
     return (
         <div className="mt-3 w-3/4 xl:mt-0">
             <form className="dropzone border-2 border-dashed border-darkmode-200/60 dark:bg-darkmode-600 dark:border-white/5 p-9 text-center">

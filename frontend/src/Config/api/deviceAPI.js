@@ -73,6 +73,11 @@ export const addActivity = async (formData) => {
     return data;
 }
 
+export const updateActivity = async (formData) => {
+    const { data } = await $authHost.post('api/update-activity', formData);
+    return data;
+}
+
 export const addCommentary = async (formData) => {
     const { data } = await $authHost.post('api/add-commentary', formData);
     return data;

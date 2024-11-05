@@ -42,7 +42,7 @@ async function getOneActivity(req, res) {
 
         { model: Activity_Files, as: 'activity_files', attributes: ['idFile', 'filePath', 'fileType', 'fileName', 'fileSize'] },
 
-        { model: Activity_Commentary, as: 'activity_commentaries', include: { model: Users, as: 'user',attributes: ['idTeacher', 'name', 'photo'] }, attributes: ['id', 'message', 'publishDate'] },
+        { model: Activity_Commentary, as: 'activity_commentaries', include: { model: Users, as: 'user', attributes: ['idTeacher', 'name', 'photo'] }, attributes: ['id', 'message', 'publishDate'] },
 
         { model: Users, as: 'users', attributes: ['idTeacher', 'name', 'photo'] }
       ]
@@ -59,7 +59,7 @@ async function getOneActivity(req, res) {
 
 async function postActivity(req, res) {
   const { idTeacher } = req.userToken;
-  const { title, description, planning, presentation, selectedSubjects, selectedEducations, selectedYears, selectedGroups, selectedSchools } = req.body;
+  const { title, description, planning, presentation, selectedSubjects, selectedEducations, selectedYears } = req.body;
   const selectedFiles = req.files;
 
   let errors = {};
@@ -116,7 +116,7 @@ async function postActivity(req, res) {
       for (const file of selectedFiles) {
         const { originalname, size } = file;
         const safeFileName = encodeURIComponent(originalname);
-      
+
         const fileType = mimeTypes.lookup(path.extname(originalname));
 
         filesRecords.push({
@@ -130,6 +130,81 @@ async function postActivity(req, res) {
     }
     await Activity_Files.bulkCreate(filesRecords);
 
+
+    res.json({ success: true });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Erro interno do servidor');
+  }
+}
+
+async function updateActivity(req, res) {
+  const { idTeacher } = req.userToken;
+  const { idActivity, title, description, planning, presentation, subjects, educations, years } = req.body;
+  const selectedFiles = req.files;
+
+  let errors = {};
+
+  if (!title) errors.title = "O campo 'Title' é obrigatório";
+  if (!description) errors.description = "O campo 'Descrição' é obrigatório";
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ success: false, errors });
+  }
+  
+
+  const subjectsArray = typeof subjects === 'string' ? JSON.parse(subjects) : subjects;
+  const educationsArray = typeof educations === 'string' ? JSON.parse(educations) : educations;
+  const yearsArray = typeof years === 'string' ? JSON.parse(years) : years;
+
+  try {
+
+    let newActivity;
+
+    newActivity = await Activities.findOne({ where: { idActivity }});
+    if (newActivity) {
+      await newActivity.update({
+        title: title,
+        description: description,
+        planning: planning || null,
+        presentation: presentation || null
+      });
+    }
+
+    const activityId = newActivity.idActivity;
+
+    // Clear existing associations and add new ones
+    await Activity_Subjects.destroy({ where: { idActivity: activityId }});
+    const subjectsRecords = subjectsArray.map(SubjectId => ({ idActivity: activityId, idSubject: SubjectId }));
+    await Activity_Subjects.bulkCreate(subjectsRecords);
+
+    await Activity_Educations.destroy({ where: { idActivity: activityId }});
+    const educationsRecords = educationsArray.map(EducationId => ({ idActivity: activityId, idEducation: EducationId }));
+    await Activity_Educations.bulkCreate(educationsRecords);
+
+    await Activity_Years.destroy({ where: { idActivity: activityId }});
+    const yearsRecords = yearsArray.map(YearId => ({ idActivity: activityId, idYear: YearId }));
+    await Activity_Years.bulkCreate(yearsRecords);
+
+    // Handle file uploads
+    const filesRecords = [];
+    if (selectedFiles && selectedFiles.length > 0) {
+      for (const file of selectedFiles) {
+        const { originalname, size, path: filePath } = file;
+        const safeFileName = encodeURIComponent(originalname);
+        const fileType = mimeTypes.lookup(path.extname(originalname));
+
+        filesRecords.push({
+          idActivity: activityId,
+          filePath,
+          fileType,
+          fileName: safeFileName,
+          fileSize: size
+        });
+      }
+      await Activity_Files.bulkCreate(filesRecords);
+    }
 
     res.json({ success: true });
 
@@ -189,4 +264,4 @@ async function postCommentary(req, res) {
 }
 
 
-module.exports = { getAllActivity, getOneActivity, postActivity, postCommentary };
+module.exports = { getAllActivity, getOneActivity, postActivity, postCommentary, updateActivity };

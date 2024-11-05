@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const { OAuth2Client } = require('google-auth-library');
 const { Users, User_Groups, User_Schools } = require('../Models/model')
 const { Sequelize } = require('sequelize');
-const client = new OAuth2Client('41978584350-7q77ll8c23fktgf7ehes1piaq5q18jc5.apps.googleusercontent.com');
 
 const jwtSecretKey = process.env.JWT_SECRET_KEY || 'default-secret-key';
 
@@ -21,7 +20,7 @@ const generateJwt = (idTeacher, role) => {
 //   try {
 //     const ticket = await client.verifyIdToken({
 //       idToken: token,
-//       audience: '41978584350-7q77ll8c23fktgf7ehes1piaq5q18jc5.apps.googleusercontent.com',
+//       audience: '',
 //     });
 //     const payload = ticket.getPayload();
 //     const { name, email } = payload;

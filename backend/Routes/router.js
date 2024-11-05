@@ -31,7 +31,6 @@ const uploadAvatar = multer({
 //   limits: { fileSize: 2 * 1024 * 1024 }
 });
 
-// Импорт контроллеров
 const authController = require('../controllers/AuthController');
 const userController = require('../Controllers/UserController');
 const activityController = require('../Controllers/ActivityController');
@@ -67,6 +66,8 @@ router.get('/chat/:chatToken', authenticateToken, chatController.getMessages);
 router.post('/add-activity', upload.array('files'), authenticateToken, activityController.postActivity);
 
 router.post('/add-commentary', authenticateToken, activityController.postCommentary);
+
+router.post('/update-activity', authenticateToken, activityController.updateActivity);
 
 router.get('/view-activities', activityController.getAllActivity)
 router.get('/view-activity/:activityId', activityController.getOneActivity)

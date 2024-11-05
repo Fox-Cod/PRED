@@ -51,7 +51,7 @@ async function deleteEntity(req, res) {
         if (!entityType || !entityId) {
             return res.status(400).json({
                 success: false,
-                message: "Необходимо указать тип и идентификатор сущности"
+                message: "É necessário especificar o tipo e o identificador da entidade"
             });
         }
 
@@ -66,7 +66,7 @@ async function deleteEntity(req, res) {
             default:
                 return res.status(400).json({
                     success: false,
-                    message: "Неподдерживаемый тип сущности"
+                    message: "Tipo de entidade não suportado"
                 });
         }
 
@@ -86,19 +86,19 @@ async function deleteEntity(req, res) {
         if (!deletedEntity) {
             return res.status(404).json({
                 success: false,
-                message: "Сущность не найдена"
+                message: "Entidade não encontrada"
             });
         }
 
         return res.status(200).json({
             success: true,
-            message: `Сущность ${entityType} с ID ${entityId} успешно удалена`
+            message: `Entidade ${entityType} com ID ${entityId} eliminado com êxito`
         });
     } catch (error) {
-        console.error('Ошибка при удалении сущности:', error);
+        console.error('Error when deleting an entity:', error);
         return res.status(500).json({
             success: false,
-            message: 'Ошибка сервера',
+            message: 'Erro do servidor',
             details: error.message
         });
     }

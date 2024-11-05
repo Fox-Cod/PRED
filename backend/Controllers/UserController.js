@@ -69,13 +69,10 @@ async function getProfileUser(req, res) {
         const selectedSchools = teacherData.user_schools.map(item => item.schools) || [];
         const selectedGroups = teacherData.user_groups.map(item => item.groups) || [];
 
-        const avatarUrl = teacherData.photo ? `http://localhost:8081/${teacherData.photo}` : null;
-
         res.json({
             Status: 'Success',
             profile: {
                 ...teacherData,
-                avatarUrl,
                 selectedSchools,
                 selectedGroups,
             },

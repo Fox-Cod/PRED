@@ -47,12 +47,8 @@ const Activities = sequelize.define('Activities', {
   title: DataTypes.STRING,
   description: DataTypes.TEXT,
   publishDate: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-  // idSubject: { type: DataTypes.INTEGER, references: { model: Subjects, key: 'idSubject' } },
-  // idYear: { type: DataTypes.INTEGER, references: { model: Years, key: 'idYear' } },
-  // idEducation: { type: DataTypes.INTEGER, references: { model: Educations, key: 'idEducation' } },
 }, { tableName: 'activities', timestamps: false });
 
-// Определение модели ActivityFiles (Файлы деятельности)
 const Activity_Files = sequelize.define('Activity_Files', {
   idFile: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   idActivity: { 
@@ -192,13 +188,6 @@ Activity_Years.belongsTo(Years, { foreignKey: 'idYear', as: 'years' });
 
 Activity_Commentary.belongsTo(Activities, { foreignKey: 'idActivity', as: 'activity' });
 Activity_Commentary.belongsTo(Users, { foreignKey: 'idTeacher', as: 'user' });
-
-
-// Subjects.hasMany(Activity_Subjects, { foreignKey: 'idSubject', as: 'subjects' });
-
-// Educations.hasMany(Activity_Educations, { foreignKey: 'idEducation', as: 'educations' });
-
-// Years.hasMany(Activity_Years, { foreignKey: 'idYear', as: 'years' });
 
 (async () => {
   try {

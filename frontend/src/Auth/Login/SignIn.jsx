@@ -19,11 +19,11 @@ export default function SignIn() {
         }
     };
 
-    const autoFillAndSubmit = () => {
-        setEmail('admin@gmail.com');
-        setPassword('56565656');
-        handleSubmit({ preventDefault: () => { } });
-    };
+    // const autoFillAndSubmit = () => {
+    //     setEmail('admin@gmail.com');
+    //     setPassword('56565656');
+    //     handleSubmit({ preventDefault: () => { } });
+    // };
 
     return (
         <>
@@ -74,11 +74,11 @@ export default function SignIn() {
                                             className="disabled:bg-slate-100 disabled:cursor-not-allowed dark:disabled:bg-darkmode-800/50 dark:disabled:border-transparent [&[readonly]]:bg-slate-100 [&[readonly]]:cursor-not-allowed [&[readonly]]:dark:bg-darkmode-800/50 [&[readonly]]:dark:border-transparent transition duration-200 ease-in-out w-full text-sm border-slate-200 shadow-sm rounded-md placeholder:text-slate-400/90 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary focus:border-opacity-40 dark:bg-darkmode-800 dark:border-transparent dark:focus:ring-slate-700 dark:focus:ring-opacity-50 dark:placeholder:text-slate-500/80 group-[.form-inline]:flex-1 group-[.input-group]:rounded-none group-[.input-group]:[&:not(:first-child)]:border-l-transparent group-[.input-group]:first:rounded-l group-[.input-group]:last:rounded-r group-[.input-group]:z-10 intro-x mt-4 block min-w-full px-4 py-3 xl:min-w-[350px]"
                                         />
                                     </div>
-                                    <div className="intro-x mt-4 flex text-xs text-slate-600 dark:text-slate-500 sm:text-sm">
+                                    {/* <div className="intro-x mt-4 flex text-xs text-slate-600 dark:text-slate-500 sm:text-sm">
                                         <div className="mr-auto flex items-center">
                                         </div>
-                                        <a href="">Forgot Password?</a>
-                                    </div>
+                                        <a href="">Senha?</a>
+                                    </div> */}
                                     {errorLog && <p className="text-danger">{errorLog}</p>}
                                     <div className="intro-x mt-5 text-center xl:mt-8 xl:text-left">
                                         <button
@@ -96,14 +96,13 @@ export default function SignIn() {
                                             Registo
                                         </Link>
                                     </div>
-                                    {/* Кнопка для автоматического ввода */}
-                                    <button
+                                    {/* <button
                                         type="button"
                                         onClick={autoFillAndSubmit}
                                         className="mt-3 w-full border border-blue-600 text-blue-600 rounded-md py-3 hover:bg-blue-600 hover:text-white transition duration-200"
                                     >
-                                        Автозаполнение и вход
-                                    </button>
+                                        Auto Login
+                                    </button> */}
                                 </form>
                             </div>
                         </div>
